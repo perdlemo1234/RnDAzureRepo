@@ -138,9 +138,10 @@
 						"container": "de-rnd"
 					},
 					"columnDelimiter": ",",
+					"rowDelimiter": "\n",
 					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
+					"firstRowAsHeader": false,
+					"quoteChar": null
 				},
 				"schema": []
 			},
