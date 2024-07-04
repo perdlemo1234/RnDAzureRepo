@@ -1,0 +1,9 @@
+{
+	"name": "dnarnd",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "860e420e-5195-46af-b3c6-984895262d65",
+		"tenantId": "b2e47f30-cd7d-4a4e-a5da-b18cf1a4151b"
+	}
+}

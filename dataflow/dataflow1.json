@@ -1,0 +1,71 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "population_state",
+						"type": "DatasetReference"
+					},
+					"name": "popstate"
+				},
+				{
+					"dataset": {
+						"referenceName": "populaton_malaysia",
+						"type": "DatasetReference"
+					},
+					"name": "popmsia"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "rndoutputjoin",
+						"type": "DatasetReference"
+					},
+					"name": "simplejoinrnd"
+				}
+			],
+			"transformations": [
+				{
+					"name": "jointest"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          state as string,",
+				"          date as string,",
+				"          sex as string,",
+				"          age as string,",
+				"          ethnicity as string,",
+				"          population as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> popstate",
+				"source(output(",
+				"          date as string,",
+				"          sex as string,",
+				"          age as string,",
+				"          ethnicity as string,",
+				"          population as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> popmsia",
+				"popstate, popmsia join(popstate@population == popmsia@population",
+				"     && popstate@ethnicity == popmsia@ethnicity,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> jointest",
+				"jointest sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> simplejoinrnd"
+			]
+		}
+	}
+}
