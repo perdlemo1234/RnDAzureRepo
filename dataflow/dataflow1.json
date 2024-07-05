@@ -21,10 +21,6 @@
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "rndoutput",
-						"type": "DatasetReference"
-					},
 					"name": "simplejoinrnd"
 				}
 			],
@@ -64,7 +60,11 @@
 				"jointest sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> simplejoinrnd"
+				"     skipDuplicateMapOutputs: true,",
+				"     store: 'cache',",
+				"     format: 'inline',",
+				"     output: true,",
+				"     saveOrder: 1) ~> simplejoinrnd"
 			]
 		}
 	}
