@@ -10,8 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "rndoutputjoin ",
-				"folderPath": "Output Folder ",
+				"folderPath": "Input Folder ",
 				"container": "de-rnd"
 			},
 			"columnDelimiter": ",",
