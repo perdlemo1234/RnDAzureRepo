@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'transformedblob'"
 		},
+		"AzureBlobStoragegithub_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStoragegithub'"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -40,6 +44,9 @@
 					},
 					"transformedblob_connectionString": {
 						"value": "[parameters('transformedblob_connectionString')]"
+					},
+					"AzureBlobStoragegithub_connectionString": {
+						"value": "[parameters('AzureBlobStoragegithub_connectionString')]"
 					}
 				}
 			},

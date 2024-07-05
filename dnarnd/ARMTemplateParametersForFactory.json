@@ -7,6 +7,9 @@
 		},
 		"transformedblob_connectionString": {
 			"value": ""
+		},
+		"AzureBlobStoragegithub_connectionString": {
+			"value": ""
 		}
 	}
 }

@@ -10,6 +10,10 @@
 		"transformedblob_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'transformedblob'"
+		},
+		"AzureBlobStoragegithub_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStoragegithub'"
 		}
 	},
 	"variables": {
@@ -126,7 +130,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "transformedblob",
+					"referenceName": "AzureBlobStoragegithub",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
@@ -134,6 +138,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"fileName": "rndoutputjoin",
 						"folderPath": "Output Folder ",
 						"container": "de-rnd"
 					},
@@ -146,7 +151,7 @@
 				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/transformedblob')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStoragegithub')]"
 			]
 		},
 		{
@@ -239,6 +244,19 @@
 				"[concat(variables('factoryId'), '/datasets/populaton_malaysia')]",
 				"[concat(variables('factoryId'), '/datasets/rndoutputjoin')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStoragegithub')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStoragegithub_connectionString')]"
+				}
+			},
+			"dependsOn": []
 		}
 	]
 }
