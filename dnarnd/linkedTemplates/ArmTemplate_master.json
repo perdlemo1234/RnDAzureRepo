@@ -7,13 +7,13 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "dnarnd"
 		},
-		"transformedblob_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'transformedblob'"
-		},
 		"AzureBlobStoragegithub_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStoragegithub'"
+		},
+		"transformedblob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'transformedblob'"
 		},
 		"containerUri": {
 			"type": "string",
@@ -42,11 +42,11 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"transformedblob_connectionString": {
-						"value": "[parameters('transformedblob_connectionString')]"
-					},
 					"AzureBlobStoragegithub_connectionString": {
 						"value": "[parameters('AzureBlobStoragegithub_connectionString')]"
+					},
+					"transformedblob_connectionString": {
+						"value": "[parameters('transformedblob_connectionString')]"
 					}
 				}
 			},

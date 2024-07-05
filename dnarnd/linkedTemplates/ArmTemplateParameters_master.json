@@ -5,10 +5,10 @@
 		"factoryName": {
 			"value": "dnarnd"
 		},
-		"transformedblob_connectionString": {
+		"AzureBlobStoragegithub_connectionString": {
 			"value": ""
 		},
-		"AzureBlobStoragegithub_connectionString": {
+		"transformedblob_connectionString": {
 			"value": ""
 		},
 		"containerUri": {

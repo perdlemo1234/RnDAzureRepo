@@ -7,19 +7,66 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "dnarnd"
 		},
-		"transformedblob_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'transformedblob'"
-		},
 		"AzureBlobStoragegithub_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStoragegithub'"
+		},
+		"transformedblob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'transformedblob'"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/pipelineRND')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "dataflow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow1",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"popstate": {},
+									"popmsia": {},
+									"simplejoinrnd": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
+			]
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/population_state')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
@@ -138,7 +185,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "rndoutputjoin",
+						"fileName": "rndoutputjoin ",
 						"folderPath": "Output Folder ",
 						"container": "de-rnd"
 					},
@@ -153,6 +200,19 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStoragegithub')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStoragegithub')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStoragegithub_connectionString')]"
+				}
+			},
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/transformedblob')]",
@@ -244,19 +304,6 @@
 				"[concat(variables('factoryId'), '/datasets/populaton_malaysia')]",
 				"[concat(variables('factoryId'), '/datasets/rndoutputjoin')]"
 			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureBlobStoragegithub')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobStorage",
-				"typeProperties": {
-					"connectionString": "[parameters('AzureBlobStoragegithub_connectionString')]"
-				}
-			},
-			"dependsOn": []
 		}
 	]
 }
