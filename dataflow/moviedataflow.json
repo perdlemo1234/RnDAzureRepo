@@ -3,11 +3,31 @@
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
-			"sources": [],
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "moviescsv",
+						"type": "DatasetReference"
+					},
+					"name": "movies"
+				}
+			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "YearExtraction"
+				}
+			],
 			"scriptLines": [
-				""
+				"source(output(",
+				"          movieId as string,",
+				"          title as string,",
+				"          genres as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> movies",
+				"movies derive(Year = toInteger(trim(right(title,6),'()'))) ~> YearExtraction"
 			]
 		}
 	}
