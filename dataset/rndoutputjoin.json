@@ -1,9 +1,19 @@
 {
 	"name": "rndoutputjoin",
 	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStoragegithub",
+			"type": "LinkedServiceReference"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "rndoutputjoin ",
+				"folderPath": "Output Folder ",
+				"container": "de-rnd"
+			},
 			"columnDelimiter": ",",
 			"rowDelimiter": "\n",
 			"escapeChar": "\\",
