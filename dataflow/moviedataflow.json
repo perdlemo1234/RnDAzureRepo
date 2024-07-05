@@ -12,7 +12,15 @@
 					"name": "movies"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "moviescsvoutput",
+						"type": "DatasetReference"
+					},
+					"name": "MovieClean"
+				}
+			],
 			"transformations": [
 				{
 					"name": "YearExtraction"
@@ -27,7 +35,14 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> movies",
-				"movies derive(Year = toInteger(trim(right(title,6),'()'))) ~> YearExtraction"
+				"movies derive(Year = toInteger(trim(right(title,6),'()')),",
+				"          title = toString(left(title, length(title)-6))) ~> YearExtraction",
+				"YearExtraction sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['moviesoutput.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> MovieClean"
 			]
 		}
 	}
