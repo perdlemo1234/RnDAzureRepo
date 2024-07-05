@@ -1,0 +1,23 @@
+{
+	"name": "rndoutput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStoragegithub",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "Output Folder ",
+				"container": "de-rnd"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

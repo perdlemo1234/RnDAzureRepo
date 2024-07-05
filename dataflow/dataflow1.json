@@ -22,7 +22,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "rndoutputjoin",
+						"referenceName": "rndoutput",
 						"type": "DatasetReference"
 					},
 					"name": "simplejoinrnd"
