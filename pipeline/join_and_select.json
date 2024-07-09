@@ -1,9 +1,9 @@
 {
-	"name": "transformation_join",
+	"name": "join_and_select",
 	"properties": {
 		"activities": [
 			{
-				"name": "join_column",
+				"name": "population_joincolumn",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -17,6 +17,30 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "population_joincolumn",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "movies_select",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "movies_select",
 						"type": "DataFlowReference"
 					},
 					"compute": {
