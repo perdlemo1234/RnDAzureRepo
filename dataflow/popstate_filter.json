@@ -1,5 +1,5 @@
 {
-	"name": "filter",
+	"name": "popstate_filter",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
