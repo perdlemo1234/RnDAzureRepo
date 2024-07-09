@@ -59,7 +59,7 @@
 				"     partitionBy('hash', 1)) ~> MovieClean",
 				"moviesbyyear sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     partitionFileNames:['movies-by-year'],",
+				"     partitionFileNames:['moviesbyyear.csv'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     partitionBy('hash', 1)) ~> moviesbyyearsink"
