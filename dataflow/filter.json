@@ -57,6 +57,7 @@
 				"          ethnicity as string,",
 				"          population as string",
 				"     ),",
+				"     partitionFileNames:['pop_filter_output '],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     partitionBy('hash', 1)) ~> populationsinkstate"
