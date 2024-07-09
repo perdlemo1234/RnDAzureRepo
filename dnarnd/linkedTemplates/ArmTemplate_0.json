@@ -220,6 +220,59 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/filterpopstateoutput')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "transformedblob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "population_state.csv",
+						"container": "de-rnd-output"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "state",
+						"type": "String"
+					},
+					{
+						"name": "date",
+						"type": "String"
+					},
+					{
+						"name": "sex",
+						"type": "String"
+					},
+					{
+						"name": "age",
+						"type": "String"
+					},
+					{
+						"name": "ethnicity",
+						"type": "String"
+					},
+					{
+						"name": "population",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/transformedblob')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/dataflowtest')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -372,7 +425,78 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"name": "[concat(parameters('factoryName'), '/filter')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "population_state",
+								"type": "DatasetReference"
+							},
+							"name": "populationstateoutput"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "filterpopstateoutput",
+								"type": "DatasetReference"
+							},
+							"name": "populationsinkstate"
+						}
+					],
+					"transformations": [
+						{
+							"name": "populationmorethan1000"
+						},
+						{
+							"name": "changedatatype"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          state as string,",
+						"          date as string,",
+						"          sex as string,",
+						"          age as string,",
+						"          ethnicity as string,",
+						"          population as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> populationstateoutput",
+						"changedatatype filter(greaterOrEqual(population, 1000)) ~> populationmorethan1000",
+						"populationstateoutput cast(output(",
+						"          population as integer '000'",
+						"     ),",
+						"     errors: true) ~> changedatatype",
+						"populationmorethan1000 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          state as string,",
+						"          date as string,",
+						"          sex as string,",
+						"          age as string,",
+						"          ethnicity as string,",
+						"          population as string",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> populationsinkstate"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/population_state')]",
+				"[concat(variables('factoryId'), '/datasets/filterpopstateoutput')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/transformation_testing')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -407,6 +531,36 @@
 							},
 							"traceLevel": "Fine"
 						}
+					},
+					{
+						"name": "filter",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "filter",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"populationstateoutput": {},
+									"populationsinkstate": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
 				"policy": {
@@ -415,7 +569,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/moviedataflow_aggregate')]"
+				"[concat(variables('factoryId'), '/dataflows/moviedataflow_aggregate')]",
+				"[concat(variables('factoryId'), '/dataflows/filter')]"
 			]
 		}
 	]
