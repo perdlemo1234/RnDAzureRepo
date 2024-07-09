@@ -627,7 +627,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "moviedataflow",
+						"name": "moviedataflow_aggregate",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -674,7 +674,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "filter",
+						"name": "popstate_filter",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
