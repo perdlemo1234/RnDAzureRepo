@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "join_column",
+						"referenceName": "population_joincolumn",
 						"type": "DataFlowReference"
 					},
 					"compute": {

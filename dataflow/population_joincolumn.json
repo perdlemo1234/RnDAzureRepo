@@ -1,5 +1,5 @@
 {
-	"name": "join_column",
+	"name": "population_joincolumn",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
