@@ -1,0 +1,65 @@
+{
+	"name": "filter",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "population_state",
+						"type": "DatasetReference"
+					},
+					"name": "populationstateoutput"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "filterpopstateoutput",
+						"type": "DatasetReference"
+					},
+					"name": "populationsinkstate"
+				}
+			],
+			"transformations": [
+				{
+					"name": "populationmorethan1000"
+				},
+				{
+					"name": "changedatatype"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          state as string,",
+				"          date as string,",
+				"          sex as string,",
+				"          age as string,",
+				"          ethnicity as string,",
+				"          population as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> populationstateoutput",
+				"changedatatype filter(greaterOrEqual(population, 1000)) ~> populationmorethan1000",
+				"populationstateoutput cast(output(",
+				"          population as integer '000'",
+				"     ),",
+				"     errors: true) ~> changedatatype",
+				"populationmorethan1000 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          state as string,",
+				"          date as string,",
+				"          sex as string,",
+				"          age as string,",
+				"          ethnicity as string,",
+				"          population as string",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> populationsinkstate"
+			]
+		}
+	}
+}
