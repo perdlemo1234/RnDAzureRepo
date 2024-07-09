@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "moviedataflow",
+				"name": "moviedataflow_aggregate",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
