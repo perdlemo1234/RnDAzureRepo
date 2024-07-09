@@ -114,6 +114,53 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/transformation_join')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "join_column",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "population_joincolumn",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"popstate": {},
+									"popmsia": {},
+									"simplejoinrnd": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/population_joincolumn')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/joincolumnoutput')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -385,89 +432,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/population_joincolumn')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "population_state",
-								"type": "DatasetReference"
-							},
-							"name": "popstate"
-						},
-						{
-							"dataset": {
-								"referenceName": "populaton_malaysia",
-								"type": "DatasetReference"
-							},
-							"name": "popmsia"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "joincolumnoutput",
-								"type": "DatasetReference"
-							},
-							"name": "simplejoinrnd"
-						}
-					],
-					"transformations": [
-						{
-							"name": "jointest"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          state as string,",
-						"          date as string,",
-						"          sex as string,",
-						"          age as string,",
-						"          ethnicity as string,",
-						"          population as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> popstate",
-						"source(output(",
-						"          date as string,",
-						"          sex as string,",
-						"          age as string,",
-						"          ethnicity as string,",
-						"          population as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> popmsia",
-						"popstate, popmsia join(popstate@population == popmsia@population",
-						"     && popstate@ethnicity == popmsia@ethnicity,",
-						"     joinType:'inner',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> jointest",
-						"jointest sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          Year as string,",
-						"          MoviesCount as string",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     saveOrder: 1) ~> simplejoinrnd"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/population_state')]",
-				"[concat(variables('factoryId'), '/datasets/populaton_malaysia')]",
-				"[concat(variables('factoryId'), '/datasets/joincolumnoutput')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/moviedataflow_aggregate')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -543,6 +507,70 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/movies_select')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "moviescsv",
+								"type": "DatasetReference"
+							},
+							"name": "movie"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "select_output",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          movieId as string,",
+						"          title as string,",
+						"          genres as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> movie",
+						"movie select(mapColumn(",
+						"          {Movie-ID} = movieId,",
+						"          {Title } = title,",
+						"          Genres = genres",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Year as string,",
+						"          MoviesCount as string",
+						"     ),",
+						"     partitionFileNames:['movie_output '],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/moviescsv')]",
+				"[concat(variables('factoryId'), '/datasets/select_output')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/popstate_filter')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -612,50 +640,124 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/transformation_join')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/population_joincolumn')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
-					{
-						"name": "join_column",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "population_state",
+								"type": "DatasetReference"
+							},
+							"name": "popstate"
 						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "population_joincolumn",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"popstate": {},
-									"popmsia": {},
-									"simplejoinrnd": {}
-								}
+						{
+							"dataset": {
+								"referenceName": "populaton_malaysia",
+								"type": "DatasetReference"
 							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
+							"name": "popmsia"
 						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "joincolumnoutput",
+								"type": "DatasetReference"
+							},
+							"name": "simplejoinrnd"
+						}
+					],
+					"transformations": [
+						{
+							"name": "jointest"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          state as string,",
+						"          date as string,",
+						"          sex as string,",
+						"          age as string,",
+						"          ethnicity as string,",
+						"          population as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> popstate",
+						"source(output(",
+						"          date as string,",
+						"          sex as string,",
+						"          age as string,",
+						"          ethnicity as string,",
+						"          population as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> popmsia",
+						"popstate, popmsia join(popstate@population == popmsia@population",
+						"     && popstate@ethnicity == popmsia@ethnicity,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> jointest",
+						"jointest sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Year as string,",
+						"          MoviesCount as string",
+						"     ),",
+						"     partitionFileNames:['filter_output '],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     partitionBy('hash', 1)) ~> simplejoinrnd"
+					]
+				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/population_joincolumn')]"
+				"[concat(variables('factoryId'), '/datasets/population_state')]",
+				"[concat(variables('factoryId'), '/datasets/populaton_malaysia')]",
+				"[concat(variables('factoryId'), '/datasets/joincolumnoutput')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/select_output')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "transformedblob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "de-rnd-output"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Year",
+						"type": "String"
+					},
+					{
+						"name": "MoviesCount",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/transformedblob')]"
 			]
 		}
 	]
