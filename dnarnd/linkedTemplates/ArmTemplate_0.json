@@ -714,13 +714,13 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/transformation_join')]",
+			"name": "[concat(parameters('factoryName'), '/join_and_select')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "join_column",
+						"name": "population_joincolumn",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -749,6 +749,36 @@
 							},
 							"traceLevel": "Fine"
 						}
+					},
+					{
+						"name": "movies_select",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "movies_select",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"movie": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
 				"policy": {
@@ -757,7 +787,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/population_joincolumn')]"
+				"[concat(variables('factoryId'), '/dataflows/population_joincolumn')]",
+				"[concat(variables('factoryId'), '/dataflows/movies_select')]"
 			]
 		}
 	]
