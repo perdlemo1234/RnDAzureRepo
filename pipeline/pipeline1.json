@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "moviedataflow",
+						"referenceName": "moviedataflow_aggregate",
 						"type": "DataFlowReference"
 					},
 					"compute": {

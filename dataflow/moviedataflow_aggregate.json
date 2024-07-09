@@ -1,5 +1,5 @@
 {
-	"name": "moviedataflow",
+	"name": "moviedataflow_aggregate",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
