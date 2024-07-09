@@ -1,5 +1,5 @@
 {
-	"name": "dataflowtest",
+	"name": "join_column",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -61,9 +61,6 @@
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     store: 'cache',",
-				"     format: 'inline',",
-				"     output: true,",
 				"     saveOrder: 1) ~> simplejoinrnd"
 			]
 		}
