@@ -14,10 +14,6 @@
 			],
 			"sinks": [
 				{
-					"dataset": {
-						"referenceName": "filterpopstateoutput",
-						"type": "DatasetReference"
-					},
 					"name": "populationsinkstate"
 				}
 			],
@@ -49,14 +45,6 @@
 				"     errors: true) ~> changedatatype",
 				"populationmorethan1000 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     input(",
-				"          state as string,",
-				"          date as string,",
-				"          sex as string,",
-				"          age as string,",
-				"          ethnicity as string,",
-				"          population as string",
-				"     ),",
 				"     partitionFileNames:['pop_filter_output '],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
