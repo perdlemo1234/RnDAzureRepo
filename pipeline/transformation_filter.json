@@ -1,9 +1,9 @@
 {
-	"name": "transformation_aggregate",
+	"name": "transformation_filter",
 	"properties": {
 		"activities": [
 			{
-				"name": "moviedataflow",
+				"name": "filter",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "moviedataflow_aggregate",
+						"referenceName": "filter",
 						"type": "DataFlowReference"
 					},
 					"compute": {
