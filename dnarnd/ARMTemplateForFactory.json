@@ -21,7 +21,7 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/transformation_testing')]",
+			"name": "[concat(parameters('factoryName'), '/transformation_aggregate')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -56,7 +56,23 @@
 							},
 							"traceLevel": "Fine"
 						}
-					},
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/moviedataflow_aggregate')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/transformation_filter')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
 					{
 						"name": "filter",
 						"type": "ExecuteDataFlow",
@@ -94,7 +110,6 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/moviedataflow_aggregate')]",
 				"[concat(variables('factoryId'), '/dataflows/filter')]"
 			]
 		},
@@ -375,6 +390,75 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/filter')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "population_state",
+								"type": "DatasetReference"
+							},
+							"name": "populationstateoutput"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "popstateoutput",
+								"type": "DatasetReference"
+							},
+							"name": "populationsinkstate"
+						}
+					],
+					"transformations": [
+						{
+							"name": "populationmorethan1000"
+						},
+						{
+							"name": "changedatatype"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          state as string,",
+						"          date as string,",
+						"          sex as string,",
+						"          age as string,",
+						"          ethnicity as string,",
+						"          population as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> populationstateoutput",
+						"changedatatype filter(greaterOrEqual(population, 1000),",
+						"     partitionBy('hash', 1)) ~> populationmorethan1000",
+						"populationstateoutput cast(output(",
+						"          population as integer '000'",
+						"     ),",
+						"     errors: true) ~> changedatatype",
+						"populationmorethan1000 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Year as string,",
+						"          MoviesCount as string",
+						"     ),",
+						"     partitionFileNames:['pop_filter_output '],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> populationsinkstate"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/population_state')]",
+				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/moviedataflow_aggregate')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -450,78 +534,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/filter')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "population_state",
-								"type": "DatasetReference"
-							},
-							"name": "populationstateoutput"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "filterpopstateoutput",
-								"type": "DatasetReference"
-							},
-							"name": "populationsinkstate"
-						}
-					],
-					"transformations": [
-						{
-							"name": "populationmorethan1000"
-						},
-						{
-							"name": "changedatatype"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          state as string,",
-						"          date as string,",
-						"          sex as string,",
-						"          age as string,",
-						"          ethnicity as string,",
-						"          population as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> populationstateoutput",
-						"changedatatype filter(greaterOrEqual(population, 1000)) ~> populationmorethan1000",
-						"populationstateoutput cast(output(",
-						"          population as integer '000'",
-						"     ),",
-						"     errors: true) ~> changedatatype",
-						"populationmorethan1000 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          state as string,",
-						"          date as string,",
-						"          sex as string,",
-						"          age as string,",
-						"          ethnicity as string,",
-						"          population as string",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> populationsinkstate"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/population_state')]",
-				"[concat(variables('factoryId'), '/datasets/filterpopstateoutput')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/filterpopstateoutput')]",
+			"name": "[concat(parameters('factoryName'), '/popstateoutput')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -534,7 +547,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "population_state.csv",
 						"container": "de-rnd-output"
 					},
 					"columnDelimiter": ",",
@@ -544,27 +556,11 @@
 				},
 				"schema": [
 					{
-						"name": "state",
+						"name": "Year",
 						"type": "String"
 					},
 					{
-						"name": "date",
-						"type": "String"
-					},
-					{
-						"name": "sex",
-						"type": "String"
-					},
-					{
-						"name": "age",
-						"type": "String"
-					},
-					{
-						"name": "ethnicity",
-						"type": "String"
-					},
-					{
-						"name": "population",
+						"name": "MoviesCount",
 						"type": "String"
 					}
 				]
