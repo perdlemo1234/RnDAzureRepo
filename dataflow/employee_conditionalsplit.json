@@ -1,18 +1,46 @@
 {
-	"name": "conditionalsplit",
+	"name": "employee_conditionalsplit",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
 				{
+					"dataset": {
+						"referenceName": "input_employees",
+						"type": "DatasetReference"
+					},
 					"name": "source1"
 				}
 			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "Splitbasedondeptid"
+				}
+			],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source1"
+				"source(output(",
+				"          EMPLOYEE_ID as string,",
+				"          FIRST_NAME as string,",
+				"          LAST_NAME as string,",
+				"          EMAIL as string,",
+				"          PHONE_NUMBER as string,",
+				"          HIRE_DATE as string,",
+				"          JOB_ID as string,",
+				"          SALARY as string,",
+				"          COMMISSION_PCT as string,",
+				"          MANAGER_ID as string,",
+				"          DEPARTMENT_ID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 split(equals(DEPARTMENT_ID,'60'),",
+				"     equals(DEPARTMENT_ID,'100') ,",
+				"     equals(DEPARTMENT_ID,'40') ,",
+				"     equals(DEPARTMENT_ID,'50') ,",
+				"     equals(DEPARTMENT_ID,'30') ,",
+				"     disjoint: false) ~> Splitbasedondeptid@(ID60, ID100, ID90, ID50, ID30, OtherIDs)"
 			]
 		}
 	}
