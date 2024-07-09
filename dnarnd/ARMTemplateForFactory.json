@@ -385,7 +385,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/join_column')]",
+			"name": "[concat(parameters('factoryName'), '/population_joincolumn')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -631,7 +631,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "join_column",
+								"referenceName": "population_joincolumn",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
@@ -655,7 +655,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/join_column')]"
+				"[concat(variables('factoryId'), '/dataflows/population_joincolumn')]"
 			]
 		}
 	]
