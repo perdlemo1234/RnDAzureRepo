@@ -14,6 +14,10 @@
 			],
 			"sinks": [
 				{
+					"dataset": {
+						"referenceName": "popstateoutput",
+						"type": "DatasetReference"
+					},
 					"name": "populationsinkstate"
 				}
 			],
@@ -45,6 +49,10 @@
 				"     errors: true) ~> changedatatype",
 				"populationmorethan1000 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     input(",
+				"          Year as string,",
+				"          MoviesCount as string",
+				"     ),",
 				"     partitionFileNames:['pop_filter_output '],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
