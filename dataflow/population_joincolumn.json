@@ -67,9 +67,11 @@
 				"          Year as string,",
 				"          MoviesCount as string",
 				"     ),",
+				"     partitionFileNames:['filter_output '],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     saveOrder: 1) ~> simplejoinrnd"
+				"     saveOrder: 1,",
+				"     partitionBy('hash', 1)) ~> simplejoinrnd"
 			]
 		}
 	}
