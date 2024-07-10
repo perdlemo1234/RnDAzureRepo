@@ -1,0 +1,49 @@
+{
+	"name": "GDP_Annual",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "transformedblob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "gdp_gni_annual_real.csv",
+				"folderPath": "Input Folder ",
+				"container": "de-rnd"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "series",
+				"type": "String"
+			},
+			{
+				"name": "date",
+				"type": "String"
+			},
+			{
+				"name": "gdp",
+				"type": "String"
+			},
+			{
+				"name": "gni",
+				"type": "String"
+			},
+			{
+				"name": "gdp_capita",
+				"type": "String"
+			},
+			{
+				"name": "gni_capita",
+				"type": "String"
+			}
+		]
+	}
+}
