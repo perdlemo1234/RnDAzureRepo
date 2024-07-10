@@ -196,6 +196,53 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/lookup')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GDP_lookuptransformation",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "GDP_lookuptransformation",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"population": {},
+									"GDP": {},
+									"combined": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/GDP_lookuptransformation')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/transformation_aggregate')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -286,6 +333,327 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/popstate_filter')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/union_transformation')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "employee_union_transformation",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "employee_union_transformation",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"IT30": {},
+									"IT50": {},
+									"IT60": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/employee_union_transformation')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GDP_AnnualTransformation')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "transformedblob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "gdp_gni_annual_real.csv",
+						"folderPath": "Input Folder ",
+						"container": "de-rnd"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "series",
+						"type": "String"
+					},
+					{
+						"name": "date",
+						"type": "String"
+					},
+					{
+						"name": "gdp",
+						"type": "String"
+					},
+					{
+						"name": "gni",
+						"type": "String"
+					},
+					{
+						"name": "gdp_capita",
+						"type": "String"
+					},
+					{
+						"name": "gni_capita",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/transformedblob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/IT30')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "transformedblob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "ID30.csv",
+						"container": "de-rnd-output"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "EMPLOYEE_ID",
+						"type": "String"
+					},
+					{
+						"name": "FIRST_NAME",
+						"type": "String"
+					},
+					{
+						"name": "LAST_NAME",
+						"type": "String"
+					},
+					{
+						"name": "EMAIL",
+						"type": "String"
+					},
+					{
+						"name": "PHONE_NUMBER",
+						"type": "String"
+					},
+					{
+						"name": "HIRE_DATE",
+						"type": "String"
+					},
+					{
+						"name": "JOB_ID",
+						"type": "String"
+					},
+					{
+						"name": "SALARY",
+						"type": "String"
+					},
+					{
+						"name": "COMMISSION_PCT",
+						"type": "String"
+					},
+					{
+						"name": "MANAGER_ID",
+						"type": "String"
+					},
+					{
+						"name": "DEPARTMENT_ID",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/transformedblob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/IT50')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "transformedblob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "ID50.csv",
+						"container": "de-rnd-output"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "EMPLOYEE_ID",
+						"type": "String"
+					},
+					{
+						"name": "FIRST_NAME",
+						"type": "String"
+					},
+					{
+						"name": "LAST_NAME",
+						"type": "String"
+					},
+					{
+						"name": "EMAIL",
+						"type": "String"
+					},
+					{
+						"name": "PHONE_NUMBER",
+						"type": "String"
+					},
+					{
+						"name": "HIRE_DATE",
+						"type": "String"
+					},
+					{
+						"name": "JOB_ID",
+						"type": "String"
+					},
+					{
+						"name": "SALARY",
+						"type": "String"
+					},
+					{
+						"name": "COMMISSION_PCT",
+						"type": "String"
+					},
+					{
+						"name": "MANAGER_ID",
+						"type": "String"
+					},
+					{
+						"name": "DEPARTMENT_ID",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/transformedblob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/IT60')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "transformedblob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "ID60.csv",
+						"container": "de-rnd-output"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "EMPLOYEE_ID",
+						"type": "String"
+					},
+					{
+						"name": "FIRST_NAME",
+						"type": "String"
+					},
+					{
+						"name": "LAST_NAME",
+						"type": "String"
+					},
+					{
+						"name": "EMAIL",
+						"type": "String"
+					},
+					{
+						"name": "PHONE_NUMBER",
+						"type": "String"
+					},
+					{
+						"name": "HIRE_DATE",
+						"type": "String"
+					},
+					{
+						"name": "JOB_ID",
+						"type": "String"
+					},
+					{
+						"name": "SALARY",
+						"type": "String"
+					},
+					{
+						"name": "COMMISSION_PCT",
+						"type": "String"
+					},
+					{
+						"name": "MANAGER_ID",
+						"type": "String"
+					},
+					{
+						"name": "DEPARTMENT_ID",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/transformedblob')]"
 			]
 		},
 		{
@@ -670,6 +1038,89 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/GDP_lookuptransformation')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "populaton_malaysia",
+								"type": "DatasetReference"
+							},
+							"name": "population"
+						},
+						{
+							"dataset": {
+								"referenceName": "GDP_AnnualTransformation",
+								"type": "DatasetReference"
+							},
+							"name": "GDP"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "popstateoutput",
+								"type": "DatasetReference"
+							},
+							"name": "combined"
+						}
+					],
+					"transformations": [
+						{
+							"name": "lookup1",
+							"description": "Match the date from the population dataset and GDP dataset ( starting from 1970 ) "
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          date as string,",
+						"          sex as string,",
+						"          age as string,",
+						"          ethnicity as string,",
+						"          population as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> population",
+						"source(output(",
+						"          series as string,",
+						"          date as string,",
+						"          gdp as string,",
+						"          gni as string,",
+						"          gdp_capita as string,",
+						"          gni_capita as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> GDP",
+						"population, GDP lookup(population@date == GDP@date,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookup1",
+						"lookup1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Year as string,",
+						"          MoviesCount as string",
+						"     ),",
+						"     partitionFileNames:['pop_and_gdp.csv'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> combined"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/populaton_malaysia')]",
+				"[concat(variables('factoryId'), '/datasets/GDP_AnnualTransformation')]",
+				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/employee_conditionalsplit')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -897,6 +1348,120 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/input_employees')]",
+				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/employee_union_transformation')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "IT30",
+								"type": "DatasetReference"
+							},
+							"name": "IT30"
+						},
+						{
+							"dataset": {
+								"referenceName": "IT50",
+								"type": "DatasetReference"
+							},
+							"name": "IT50"
+						},
+						{
+							"dataset": {
+								"referenceName": "IT60",
+								"type": "DatasetReference"
+							},
+							"name": "IT60"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "popstateoutput",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "union1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          EMPLOYEE_ID as string,",
+						"          FIRST_NAME as string,",
+						"          LAST_NAME as string,",
+						"          EMAIL as string,",
+						"          PHONE_NUMBER as string,",
+						"          HIRE_DATE as string,",
+						"          JOB_ID as string,",
+						"          SALARY as string,",
+						"          COMMISSION_PCT as string,",
+						"          MANAGER_ID as string,",
+						"          DEPARTMENT_ID as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> IT30",
+						"source(output(",
+						"          EMPLOYEE_ID as string,",
+						"          FIRST_NAME as string,",
+						"          LAST_NAME as string,",
+						"          EMAIL as string,",
+						"          PHONE_NUMBER as string,",
+						"          HIRE_DATE as string,",
+						"          JOB_ID as string,",
+						"          SALARY as string,",
+						"          COMMISSION_PCT as string,",
+						"          MANAGER_ID as string,",
+						"          DEPARTMENT_ID as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> IT50",
+						"source(output(",
+						"          EMPLOYEE_ID as string,",
+						"          FIRST_NAME as string,",
+						"          LAST_NAME as string,",
+						"          EMAIL as string,",
+						"          PHONE_NUMBER as string,",
+						"          HIRE_DATE as string,",
+						"          JOB_ID as string,",
+						"          SALARY as string,",
+						"          COMMISSION_PCT as string,",
+						"          MANAGER_ID as string,",
+						"          DEPARTMENT_ID as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> IT60",
+						"IT30, IT50, IT60 union(byName: true)~> union1",
+						"union1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Year as string,",
+						"          MoviesCount as string",
+						"     ),",
+						"     partitionFileNames:['employee_union_output'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/IT30')]",
+				"[concat(variables('factoryId'), '/datasets/IT50')]",
+				"[concat(variables('factoryId'), '/datasets/IT60')]",
 				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
 			]
 		},
@@ -1191,190 +1756,6 @@
 				"[concat(variables('factoryId'), '/datasets/population_state')]",
 				"[concat(variables('factoryId'), '/datasets/populaton_malaysia')]",
 				"[concat(variables('factoryId'), '/datasets/joincolumnoutput')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/GDP_lookuptransformation')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "populaton_malaysia",
-								"type": "DatasetReference"
-							},
-							"name": "population"
-						},
-						{
-							"dataset": {
-								"referenceName": "GDP_AnnualTransformation",
-								"type": "DatasetReference"
-							},
-							"name": "GDP"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "popstateoutput",
-								"type": "DatasetReference"
-							},
-							"name": "combined"
-						}
-					],
-					"transformations": [
-						{
-							"name": "lookup1",
-							"description": "Match the date from the population dataset and GDP dataset ( starting from 1970 ) "
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          date as string,",
-						"          sex as string,",
-						"          age as string,",
-						"          ethnicity as string,",
-						"          population as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> population",
-						"source(output(",
-						"          series as string,",
-						"          date as string,",
-						"          gdp as string,",
-						"          gni as string,",
-						"          gdp_capita as string,",
-						"          gni_capita as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> GDP",
-						"population, GDP lookup(population@date == GDP@date,",
-						"     multiple: false,",
-						"     pickup: 'any',",
-						"     broadcast: 'auto')~> lookup1",
-						"lookup1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          Year as string,",
-						"          MoviesCount as string",
-						"     ),",
-						"     partitionFileNames:['pop_and_gdp.csv'],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> combined"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/populaton_malaysia')]",
-				"[concat(variables('factoryId'), '/datasets/GDP_AnnualTransformation')]",
-				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/GDP_AnnualTransformation')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "transformedblob",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "gdp_gni_annual_real.csv",
-						"folderPath": "Input Folder ",
-						"container": "de-rnd"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "series",
-						"type": "String"
-					},
-					{
-						"name": "date",
-						"type": "String"
-					},
-					{
-						"name": "gdp",
-						"type": "String"
-					},
-					{
-						"name": "gni",
-						"type": "String"
-					},
-					{
-						"name": "gdp_capita",
-						"type": "String"
-					},
-					{
-						"name": "gni_capita",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/transformedblob')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/lookup')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "GDP_lookuptransformation",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "GDP_lookuptransformation",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"population": {},
-									"GDP": {},
-									"combined": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/GDP_lookuptransformation')]"
 			]
 		}
 	]

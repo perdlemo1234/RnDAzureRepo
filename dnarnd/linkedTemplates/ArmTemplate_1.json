@@ -13,6 +13,246 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/popstate_filter')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "population_state",
+								"type": "DatasetReference"
+							},
+							"name": "populationstateoutput"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "popstateoutput",
+								"type": "DatasetReference"
+							},
+							"name": "populationsinkstate"
+						}
+					],
+					"transformations": [
+						{
+							"name": "populationmorethan1000"
+						},
+						{
+							"name": "changedatatype"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          state as string,",
+						"          date as string,",
+						"          sex as string,",
+						"          age as string,",
+						"          ethnicity as string,",
+						"          population as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> populationstateoutput",
+						"changedatatype filter(greaterOrEqual(population, 1000),",
+						"     partitionBy('hash', 1)) ~> populationmorethan1000",
+						"populationstateoutput cast(output(",
+						"          population as integer '000'",
+						"     ),",
+						"     errors: true) ~> changedatatype",
+						"populationmorethan1000 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Year as string,",
+						"          MoviesCount as string",
+						"     ),",
+						"     partitionFileNames:['pop_filter_output '],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> populationsinkstate"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/population_joincolumn')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "population_state",
+								"type": "DatasetReference"
+							},
+							"name": "popstate"
+						},
+						{
+							"dataset": {
+								"referenceName": "populaton_malaysia",
+								"type": "DatasetReference"
+							},
+							"name": "popmsia"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "joincolumnoutput",
+								"type": "DatasetReference"
+							},
+							"name": "simplejoinrnd"
+						}
+					],
+					"transformations": [
+						{
+							"name": "jointest"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          state as string,",
+						"          date as string,",
+						"          sex as string,",
+						"          age as string,",
+						"          ethnicity as string,",
+						"          population as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> popstate",
+						"source(output(",
+						"          date as string,",
+						"          sex as string,",
+						"          age as string,",
+						"          ethnicity as string,",
+						"          population as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> popmsia",
+						"popstate, popmsia join(popstate@population == popmsia@population",
+						"     && popstate@ethnicity == popmsia@ethnicity,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> jointest",
+						"jointest sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Year as string,",
+						"          MoviesCount as string",
+						"     ),",
+						"     partitionFileNames:['filter_output '],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     partitionBy('hash', 1)) ~> simplejoinrnd"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/conditional_split')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "employee_conditionalsplit",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "employee_conditionalsplit",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {},
+									"sink2": {},
+									"sink3": {},
+									"sink4": {},
+									"sink5": {},
+									"sink6": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/derived_col')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "employee_derived_col",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "employee_derived_col",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"employee": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/join_and_select')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -69,6 +309,53 @@
 								"datasetParameters": {
 									"movie": {},
 									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/population_joincolumn')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/lookup')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GDP_lookuptransformation",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "GDP_lookuptransformation",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"population": {},
+									"GDP": {},
+									"combined": {}
 								}
 							},
 							"staging": {},
@@ -174,16 +461,18 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/popstate_filter')]"
+			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/lookup')]",
+			"name": "[concat(parameters('factoryName'), '/union_transformation')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "GDP_lookuptransformation",
+						"name": "employee_union_transformation",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -196,13 +485,14 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "GDP_lookuptransformation",
+								"referenceName": "employee_union_transformation",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"population": {},
-									"GDP": {},
-									"combined": {}
+									"IT30": {},
+									"IT50": {},
+									"IT60": {},
+									"sink1": {}
 								}
 							},
 							"staging": {},
