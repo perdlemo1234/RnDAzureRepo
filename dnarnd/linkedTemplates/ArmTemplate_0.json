@@ -851,6 +851,81 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/employee_derived_col')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "input_employees",
+								"type": "DatasetReference"
+							},
+							"name": "employee"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "popstateoutput",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "cast1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          EMPLOYEE_ID as string,",
+						"          FIRST_NAME as string,",
+						"          LAST_NAME as string,",
+						"          EMAIL as string,",
+						"          PHONE_NUMBER as string,",
+						"          HIRE_DATE as string,",
+						"          JOB_ID as string,",
+						"          SALARY as string,",
+						"          COMMISSION_PCT as string,",
+						"          MANAGER_ID as string,",
+						"          DEPARTMENT_ID as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> employee",
+						"cast1 derive(FIRST_NAME = upper(FIRST_NAME) ,",
+						"          LAST_NAME = upper(LAST_NAME) ,",
+						"          {High Salary } = iif(SALARY>10000, 'Yes', 'No')) ~> derivedColumn1",
+						"employee cast(output(",
+						"          SALARY as integer",
+						"     ),",
+						"     errors: true) ~> cast1",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Year as string,",
+						"          MoviesCount as string",
+						"     ),",
+						"     partitionFileNames:['derived_col_output'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/input_employees')]",
+				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/join_and_select')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
