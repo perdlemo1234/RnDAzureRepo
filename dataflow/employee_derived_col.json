@@ -59,7 +59,7 @@
 				"          Year as string,",
 				"          MoviesCount as string",
 				"     ),",
-				"     partitionFileNames:['employee_derivedcol '],",
+				"     partitionFileNames:['derived_col_output'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     partitionBy('hash', 1)) ~> sink1"
