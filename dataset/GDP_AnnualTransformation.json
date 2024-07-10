@@ -1,5 +1,5 @@
 {
-	"name": "GDP_Annual",
+	"name": "GDP_AnnualTransformation",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "transformedblob",

@@ -1,13 +1,75 @@
 {
-	"name": "lookuptransformation",
+	"name": "GDP_lookuptransformation",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
-			"sources": [],
-			"sinks": [],
-			"transformations": [],
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "populaton_malaysia",
+						"type": "DatasetReference"
+					},
+					"name": "population"
+				},
+				{
+					"dataset": {
+						"referenceName": "GDP_AnnualTransformation",
+						"type": "DatasetReference"
+					},
+					"name": "GDP"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "popstateoutput",
+						"type": "DatasetReference"
+					},
+					"name": "lookup"
+				}
+			],
+			"transformations": [
+				{
+					"name": "lookup1",
+					"description": "Match the date from the population dataset and GDP dataset ( starting from 1970 ) "
+				}
+			],
 			"scriptLines": [
-				""
+				"source(output(",
+				"          date as string,",
+				"          sex as string,",
+				"          age as string,",
+				"          ethnicity as string,",
+				"          population as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> population",
+				"source(output(",
+				"          series as string,",
+				"          date as string,",
+				"          gdp as string,",
+				"          gni as string,",
+				"          gdp_capita as string,",
+				"          gni_capita as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> GDP",
+				"population, GDP lookup(population@date == GDP@date,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup1",
+				"lookup1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Year as string,",
+				"          MoviesCount as string",
+				"     ),",
+				"     partitionFileNames:['pop_and_gdp.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> lookup"
 			]
 		}
 	}
