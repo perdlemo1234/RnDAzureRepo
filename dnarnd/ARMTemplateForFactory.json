@@ -21,6 +21,103 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/conditional_split')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "employee_conditionalsplit",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "employee_conditionalsplit",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {},
+									"sink2": {},
+									"sink3": {},
+									"sink4": {},
+									"sink5": {},
+									"sink6": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/employee_conditionalsplit')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/derived_col')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "employee_derived_col",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "employee_derived_col",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"employee": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/employee_derived_col')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/join_and_select')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -729,6 +826,81 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/employee_derived_col')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "input_employees",
+								"type": "DatasetReference"
+							},
+							"name": "employee"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "popstateoutput",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "cast1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          EMPLOYEE_ID as string,",
+						"          FIRST_NAME as string,",
+						"          LAST_NAME as string,",
+						"          EMAIL as string,",
+						"          PHONE_NUMBER as string,",
+						"          HIRE_DATE as string,",
+						"          JOB_ID as string,",
+						"          SALARY as string,",
+						"          COMMISSION_PCT as string,",
+						"          MANAGER_ID as string,",
+						"          DEPARTMENT_ID as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> employee",
+						"cast1 derive(FIRST_NAME = upper(FIRST_NAME),",
+						"          LAST_NAME = upper(LAST_NAME),",
+						"          {High Salary } = iif(SALARY>10000, 'Yes', 'No')) ~> derivedColumn1",
+						"employee cast(output(",
+						"          SALARY as integer",
+						"     ),",
+						"     errors: true) ~> cast1",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Year as string,",
+						"          MoviesCount as string",
+						"     ),",
+						"     partitionFileNames:['derived_col_output'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/input_employees')]",
+				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/moviedataflow_aggregate')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -1022,58 +1194,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/conditional_split')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "employee_conditionalsplit",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "employee_conditionalsplit",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"source1": {},
-									"sink1": {},
-									"sink2": {},
-									"sink3": {},
-									"sink4": {},
-									"sink5": {},
-									"sink6": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/employee_conditionalsplit')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/employee_derived_col')]",
+			"name": "[concat(parameters('factoryName'), '/GDP_lookuptransformation')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1082,10 +1203,17 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "input_employees",
+								"referenceName": "populaton_malaysia",
 								"type": "DatasetReference"
 							},
-							"name": "employee"
+							"name": "population"
+						},
+						{
+							"dataset": {
+								"referenceName": "GDP_AnnualTransformation",
+								"type": "DatasetReference"
+							},
+							"name": "GDP"
 						}
 					],
 					"sinks": [
@@ -1094,67 +1222,122 @@
 								"referenceName": "popstateoutput",
 								"type": "DatasetReference"
 							},
-							"name": "sink1"
+							"name": "combined"
 						}
 					],
 					"transformations": [
 						{
-							"name": "derivedColumn1"
-						},
-						{
-							"name": "cast1"
+							"name": "lookup1",
+							"description": "Match the date from the population dataset and GDP dataset ( starting from 1970 ) "
 						}
 					],
 					"scriptLines": [
 						"source(output(",
-						"          EMPLOYEE_ID as string,",
-						"          FIRST_NAME as string,",
-						"          LAST_NAME as string,",
-						"          EMAIL as string,",
-						"          PHONE_NUMBER as string,",
-						"          HIRE_DATE as string,",
-						"          JOB_ID as string,",
-						"          SALARY as string,",
-						"          COMMISSION_PCT as string,",
-						"          MANAGER_ID as string,",
-						"          DEPARTMENT_ID as string",
+						"          date as string,",
+						"          sex as string,",
+						"          age as string,",
+						"          ethnicity as string,",
+						"          population as string",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> employee",
-						"cast1 derive(FIRST_NAME = upper(FIRST_NAME) ,",
-						"          LAST_NAME = upper(LAST_NAME) ,",
-						"          {High Salary } = iif(SALARY>10000, 'Yes', 'No')) ~> derivedColumn1",
-						"employee cast(output(",
-						"          SALARY as integer",
+						"     ignoreNoFilesFound: false) ~> population",
+						"source(output(",
+						"          series as string,",
+						"          date as string,",
+						"          gdp as string,",
+						"          gni as string,",
+						"          gdp_capita as string,",
+						"          gni_capita as string",
 						"     ),",
-						"     errors: true) ~> cast1",
-						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> GDP",
+						"population, GDP lookup(population@date == GDP@date,",
+						"     multiple: false,",
+						"     pickup: 'any',",
+						"     broadcast: 'auto')~> lookup1",
+						"lookup1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
 						"          Year as string,",
 						"          MoviesCount as string",
 						"     ),",
-						"     partitionFileNames:['derived_col_output'],",
+						"     partitionFileNames:['pop_and_gdp.csv'],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> sink1"
+						"     partitionBy('hash', 1)) ~> combined"
 					]
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/input_employees')]",
+				"[concat(variables('factoryId'), '/datasets/populaton_malaysia')]",
+				"[concat(variables('factoryId'), '/datasets/GDP_AnnualTransformation')]",
 				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/derived_col')]",
+			"name": "[concat(parameters('factoryName'), '/GDP_AnnualTransformation')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "transformedblob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "gdp_gni_annual_real.csv",
+						"folderPath": "Input Folder ",
+						"container": "de-rnd"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "series",
+						"type": "String"
+					},
+					{
+						"name": "date",
+						"type": "String"
+					},
+					{
+						"name": "gdp",
+						"type": "String"
+					},
+					{
+						"name": "gni",
+						"type": "String"
+					},
+					{
+						"name": "gdp_capita",
+						"type": "String"
+					},
+					{
+						"name": "gni_capita",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/transformedblob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/lookup')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "employee_derived_col",
+						"name": "GDP_lookuptransformation",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -1167,12 +1350,13 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "employee_derived_col",
+								"referenceName": "GDP_lookuptransformation",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"employee": {},
-									"sink1": {}
+									"population": {},
+									"GDP": {},
+									"combined": {}
 								}
 							},
 							"staging": {},
@@ -1190,7 +1374,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/employee_derived_col')]"
+				"[concat(variables('factoryId'), '/dataflows/GDP_lookuptransformation')]"
 			]
 		}
 	]
