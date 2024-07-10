@@ -12,7 +12,50 @@
 					"name": "source1"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "popstateoutput",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "popstateoutput",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "popstateoutput",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				},
+				{
+					"dataset": {
+						"referenceName": "popstateoutput",
+						"type": "DatasetReference"
+					},
+					"name": "sink4"
+				},
+				{
+					"dataset": {
+						"referenceName": "popstateoutput",
+						"type": "DatasetReference"
+					},
+					"name": "sink5"
+				},
+				{
+					"dataset": {
+						"referenceName": "popstateoutput",
+						"type": "DatasetReference"
+					},
+					"name": "sink6"
+				}
+			],
 			"transformations": [
 				{
 					"name": "Splitbasedondeptid"
@@ -36,11 +79,71 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
 				"source1 split(equals(DEPARTMENT_ID,'60'),",
-				"     equals(DEPARTMENT_ID,'100') ,",
-				"     equals(DEPARTMENT_ID,'40') ,",
-				"     equals(DEPARTMENT_ID,'50') ,",
-				"     equals(DEPARTMENT_ID,'30') ,",
-				"     disjoint: false) ~> Splitbasedondeptid@(ID60, ID100, ID90, ID50, ID30, OtherIDs)"
+				"     equals(DEPARTMENT_ID,'100'),",
+				"     equals(DEPARTMENT_ID,'40'),",
+				"     equals(DEPARTMENT_ID,'50'),",
+				"     equals(DEPARTMENT_ID,'30'),",
+				"     disjoint: false) ~> Splitbasedondeptid@(ID60, ID100, ID90, ID50, ID30, OtherIDs)",
+				"Splitbasedondeptid@ID100 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Year as string,",
+				"          MoviesCount as string",
+				"     ),",
+				"     partitionFileNames:['ID100.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1",
+				"Splitbasedondeptid@ID90 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Year as string,",
+				"          MoviesCount as string",
+				"     ),",
+				"     partitionFileNames:['ID90.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink2",
+				"Splitbasedondeptid@ID50 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Year as string,",
+				"          MoviesCount as string",
+				"     ),",
+				"     partitionFileNames:['ID50.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink3",
+				"Splitbasedondeptid@ID30 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Year as string,",
+				"          MoviesCount as string",
+				"     ),",
+				"     partitionFileNames:['ID30.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink4",
+				"Splitbasedondeptid@ID60 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Year as string,",
+				"          MoviesCount as string",
+				"     ),",
+				"     partitionFileNames:['ID60.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink5",
+				"Splitbasedondeptid@OtherIDs sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Year as string,",
+				"          MoviesCount as string",
+				"     ),",
+				"     partitionFileNames:['OtherID.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink6"
 			]
 		}
 	}
