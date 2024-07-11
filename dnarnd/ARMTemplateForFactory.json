@@ -1121,6 +1121,72 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/concatenate_column_transformation')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "input_employees",
+								"type": "DatasetReference"
+							},
+							"name": "employees"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "popstateoutput",
+								"type": "DatasetReference"
+							},
+							"name": "FullName"
+						}
+					],
+					"transformations": [
+						{
+							"name": "derivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          EMPLOYEE_ID as string,",
+						"          FIRST_NAME as string,",
+						"          LAST_NAME as string,",
+						"          EMAIL as string,",
+						"          PHONE_NUMBER as string,",
+						"          HIRE_DATE as string,",
+						"          JOB_ID as string,",
+						"          SALARY as string,",
+						"          COMMISSION_PCT as string,",
+						"          MANAGER_ID as string,",
+						"          DEPARTMENT_ID as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> employees",
+						"employees derive(FullName = concat(FIRST_NAME,LAST_NAME)) ~> derivedColumn1",
+						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Year as string,",
+						"          MoviesCount as string",
+						"     ),",
+						"     partitionFileNames:['concatenate_column_output'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> FullName"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/input_employees')]",
+				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/employee_conditionalsplit')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -1756,6 +1822,52 @@
 				"[concat(variables('factoryId'), '/datasets/population_state')]",
 				"[concat(variables('factoryId'), '/datasets/populaton_malaysia')]",
 				"[concat(variables('factoryId'), '/datasets/joincolumnoutput')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/concat_column')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "concatenate_column_transformation",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "concatenate_column_transformation",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"employees": {},
+									"FullName": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/concatenate_column_transformation')]"
 			]
 		}
 	]
