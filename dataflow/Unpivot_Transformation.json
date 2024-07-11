@@ -12,7 +12,15 @@
 					"name": "boughtfood"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "popstateoutput",
+						"type": "DatasetReference"
+					},
+					"name": "unpivotsink"
+				}
+			],
 			"transformations": [
 				{
 					"name": "unpivot1"
@@ -36,7 +44,17 @@
 				"     ungroupBy({ID },",
 				"          Restaurant_Name),",
 				"     lateral: true,",
-				"     ignoreNullPivots: false) ~> unpivot1"
+				"     ignoreNullPivots: false) ~> unpivot1",
+				"unpivot1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Year as string,",
+				"          MoviesCount as string",
+				"     ),",
+				"     partitionFileNames:['food_unpivot'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> unpivotsink"
 			]
 		}
 	}
