@@ -3,11 +3,59 @@
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
-			"sources": [],
-			"sinks": [],
-			"transformations": [],
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "input_employees",
+						"type": "DatasetReference"
+					},
+					"name": "employees"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "popstateoutput",
+						"type": "DatasetReference"
+					},
+					"name": "ascendingsalary",
+					"description": "obtains average salary. Output depends on whether we have sort enabled.  "
+				}
+			],
+			"transformations": [
+				{
+					"name": "window1"
+				}
+			],
 			"scriptLines": [
-				""
+				"source(output(",
+				"          EMPLOYEE_ID as string,",
+				"          FIRST_NAME as string,",
+				"          LAST_NAME as string,",
+				"          EMAIL as string,",
+				"          PHONE_NUMBER as string,",
+				"          HIRE_DATE as string,",
+				"          JOB_ID as string,",
+				"          SALARY as integer,",
+				"          COMMISSION_PCT as string,",
+				"          MANAGER_ID as integer,",
+				"          DEPARTMENT_ID as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> employees",
+				"employees window(over(DEPARTMENT_ID),",
+				"     asc(SALARY, true),",
+				"     {Average Salary } = avg(SALARY),",
+				"          {Rank Salary } = rank()) ~> window1",
+				"window1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          Year as string,",
+				"          MoviesCount as string",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> ascendingsalary"
 			]
 		}
 	}
