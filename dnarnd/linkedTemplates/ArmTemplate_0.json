@@ -47,23 +47,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [],
-					"sinks": [],
-					"transformations": [],
-					"scriptLines": [
-						""
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/GDP_AnnualTransformation')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -683,6 +666,56 @@
 					},
 					{
 						"name": "MoviesCount",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/transformedblob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/input_food')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "transformedblob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "food.csv",
+						"folderPath": "Input Folder ",
+						"container": "de-rnd"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ID ",
+						"type": "String"
+					},
+					{
+						"name": "Restaurant_Name",
+						"type": "String"
+					},
+					{
+						"name": "Chicken ",
+						"type": "String"
+					},
+					{
+						"name": "Beef",
+						"type": "String"
+					},
+					{
+						"name": "Lettuce",
 						"type": "String"
 					}
 				]

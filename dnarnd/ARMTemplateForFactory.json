@@ -1975,6 +1975,36 @@
 							},
 							"traceLevel": "Fine"
 						}
+					},
+					{
+						"name": "Unpivot_Transformation",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Unpivot_Transformation",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"boughtfood": {},
+									"unpivotsink": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
 					}
 				],
 				"policy": {
@@ -1983,25 +2013,126 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/pivot_transformation')]"
+				"[concat(variables('factoryId'), '/dataflows/pivot_transformation')]",
+				"[concat(variables('factoryId'), '/dataflows/Unpivot_Transformation')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"name": "[concat(parameters('factoryName'), '/Unpivot_Transformation')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"type": "MappingDataFlow",
 				"typeProperties": {
-					"sources": [],
-					"sinks": [],
-					"transformations": [],
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "input_food",
+								"type": "DatasetReference"
+							},
+							"name": "boughtfood"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "popstateoutput",
+								"type": "DatasetReference"
+							},
+							"name": "unpivotsink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "unpivot1"
+						}
+					],
 					"scriptLines": [
-						""
+						"source(output(",
+						"          {ID } as string,",
+						"          Restaurant_Name as string,",
+						"          {Chicken } as string,",
+						"          Beef as string,",
+						"          Lettuce as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> boughtfood",
+						"boughtfood unpivot(output(",
+						"          {Fresh Produce} as string,",
+						"          {Amount } as string",
+						"     ),",
+						"     ungroupBy({ID },",
+						"          Restaurant_Name),",
+						"     lateral: true,",
+						"     ignoreNullPivots: false) ~> unpivot1",
+						"unpivot1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Year as string,",
+						"          MoviesCount as string",
+						"     ),",
+						"     partitionFileNames:['food_unpivot'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> unpivotsink"
 					]
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/input_food')]",
+				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/input_food')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "transformedblob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "food.csv",
+						"folderPath": "Input Folder ",
+						"container": "de-rnd"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ID ",
+						"type": "String"
+					},
+					{
+						"name": "Restaurant_Name",
+						"type": "String"
+					},
+					{
+						"name": "Chicken ",
+						"type": "String"
+					},
+					{
+						"name": "Beef",
+						"type": "String"
+					},
+					{
+						"name": "Lettuce",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/transformedblob')]"
+			]
 		}
 	]
 }
