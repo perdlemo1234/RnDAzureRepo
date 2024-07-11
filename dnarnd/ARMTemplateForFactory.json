@@ -2238,8 +2238,10 @@
 						"          Year as string,",
 						"          MoviesCount as string",
 						"     ),",
+						"     partitionFileNames:['Output_window'],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> ascendingsalary"
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> ascendingsalary"
 					]
 				}
 			},
