@@ -21,6 +21,98 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/IMP_WINDOW')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "window_transformation",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "window_transformation",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"employees": {},
+									"ascendingsalary": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/window_transformation')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/concat_column')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "concatenate_column_transformation",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "concatenate_column_transformation",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"employees": {},
+									"FullName": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/concatenate_column_transformation')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/conditional_split')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -240,6 +332,83 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/GDP_lookuptransformation')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pivot_and_unpivot')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "pivot_transformation",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "pivot_transformation",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"input": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "Unpivot_Transformation",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Unpivot_Transformation",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"boughtfood": {},
+									"unpivotsink": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/pivot_transformation')]",
+				"[concat(variables('factoryId'), '/dataflows/Unpivot_Transformation')]"
 			]
 		},
 		{
@@ -731,6 +900,56 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/input_food')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "transformedblob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "food.csv",
+						"folderPath": "Input Folder ",
+						"container": "de-rnd"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ID ",
+						"type": "String"
+					},
+					{
+						"name": "Restaurant_Name",
+						"type": "String"
+					},
+					{
+						"name": "Chicken ",
+						"type": "String"
+					},
+					{
+						"name": "Beef",
+						"type": "String"
+					},
+					{
+						"name": "Lettuce",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/transformedblob')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/joincolumnoutput')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1117,6 +1336,73 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/populaton_malaysia')]",
 				"[concat(variables('factoryId'), '/datasets/GDP_AnnualTransformation')]",
+				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Unpivot_Transformation')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "input_food",
+								"type": "DatasetReference"
+							},
+							"name": "boughtfood"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "popstateoutput",
+								"type": "DatasetReference"
+							},
+							"name": "unpivotsink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "unpivot1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          {ID } as string,",
+						"          Restaurant_Name as string,",
+						"          {Chicken } as string,",
+						"          Beef as string,",
+						"          Lettuce as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> boughtfood",
+						"boughtfood unpivot(output(",
+						"          {Fresh Produce} as string,",
+						"          {Amount } as string",
+						"     ),",
+						"     ungroupBy({ID },",
+						"          Restaurant_Name),",
+						"     lateral: true,",
+						"     ignoreNullPivots: false) ~> unpivot1",
+						"unpivot1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Year as string,",
+						"          MoviesCount as string",
+						"     ),",
+						"     partitionFileNames:['food_unpivot'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> unpivotsink"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/input_food')]",
 				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
 			]
 		},
@@ -1671,6 +1957,76 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pivot_transformation')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "input_employees",
+								"type": "DatasetReference"
+							},
+							"name": "input"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "popstateoutput",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "pivot"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          EMPLOYEE_ID as string,",
+						"          FIRST_NAME as string,",
+						"          LAST_NAME as string,",
+						"          EMAIL as string,",
+						"          PHONE_NUMBER as string,",
+						"          HIRE_DATE as string,",
+						"          JOB_ID as string,",
+						"          SALARY as string,",
+						"          COMMISSION_PCT as string,",
+						"          MANAGER_ID as string,",
+						"          DEPARTMENT_ID as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> input",
+						"input pivot(groupBy(DEPARTMENT_ID),",
+						"     pivotBy(JOB_ID),",
+						"     total_ = count(EMPLOYEE_ID),",
+						"     columnNaming: '$N$V',",
+						"     lateral: true) ~> pivot",
+						"pivot sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Year as string,",
+						"          MoviesCount as string",
+						"     ),",
+						"     partitionFileNames:['employee_pivot_output'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/input_employees')]",
+				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/popstate_filter')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -1825,53 +2181,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/concat_column')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "concatenate_column_transformation",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "concatenate_column_transformation",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"employees": {},
-									"FullName": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/concatenate_column_transformation')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pivot_transformation')]",
+			"name": "[concat(parameters('factoryName'), '/window_transformation')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1883,7 +2193,7 @@
 								"referenceName": "input_employees",
 								"type": "DatasetReference"
 							},
-							"name": "input"
+							"name": "employees"
 						}
 					],
 					"sinks": [
@@ -1892,12 +2202,13 @@
 								"referenceName": "popstateoutput",
 								"type": "DatasetReference"
 							},
-							"name": "sink1"
+							"name": "ascendingsalary",
+							"description": "obtains average salary. Output depends on whether we have sort enabled.  "
 						}
 					],
 					"transformations": [
 						{
-							"name": "pivot"
+							"name": "window1"
 						}
 					],
 					"scriptLines": [
@@ -1909,229 +2220,32 @@
 						"          PHONE_NUMBER as string,",
 						"          HIRE_DATE as string,",
 						"          JOB_ID as string,",
-						"          SALARY as string,",
+						"          SALARY as integer,",
 						"          COMMISSION_PCT as string,",
-						"          MANAGER_ID as string,",
-						"          DEPARTMENT_ID as string",
+						"          MANAGER_ID as integer,",
+						"          DEPARTMENT_ID as integer",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> input",
-						"input pivot(groupBy(DEPARTMENT_ID),",
-						"     pivotBy(JOB_ID),",
-						"     total_ = count(EMPLOYEE_ID),",
-						"     columnNaming: '$N$V',",
-						"     lateral: true) ~> pivot",
-						"pivot sink(allowSchemaDrift: true,",
+						"     ignoreNoFilesFound: false) ~> employees",
+						"employees window(over(DEPARTMENT_ID),",
+						"     asc(SALARY, true),",
+						"     {Average Salary } = avg(SALARY),",
+						"          {Rank Salary } = rank()) ~> window1",
+						"window1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
 						"          Year as string,",
 						"          MoviesCount as string",
 						"     ),",
-						"     partitionFileNames:['employee_pivot_output'],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> sink1"
+						"     skipDuplicateMapOutputs: true) ~> ascendingsalary"
 					]
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/input_employees')]",
 				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pivot_and_unpivot')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "pivot_transformation",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "pivot_transformation",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"input": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "Unpivot_Transformation",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "Unpivot_Transformation",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"boughtfood": {},
-									"unpivotsink": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/pivot_transformation')]",
-				"[concat(variables('factoryId'), '/dataflows/Unpivot_Transformation')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Unpivot_Transformation')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "input_food",
-								"type": "DatasetReference"
-							},
-							"name": "boughtfood"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "popstateoutput",
-								"type": "DatasetReference"
-							},
-							"name": "unpivotsink"
-						}
-					],
-					"transformations": [
-						{
-							"name": "unpivot1"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          {ID } as string,",
-						"          Restaurant_Name as string,",
-						"          {Chicken } as string,",
-						"          Beef as string,",
-						"          Lettuce as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> boughtfood",
-						"boughtfood unpivot(output(",
-						"          {Fresh Produce} as string,",
-						"          {Amount } as string",
-						"     ),",
-						"     ungroupBy({ID },",
-						"          Restaurant_Name),",
-						"     lateral: true,",
-						"     ignoreNullPivots: false) ~> unpivot1",
-						"unpivot1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          Year as string,",
-						"          MoviesCount as string",
-						"     ),",
-						"     partitionFileNames:['food_unpivot'],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> unpivotsink"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/input_food')]",
-				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/input_food')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "transformedblob",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "food.csv",
-						"folderPath": "Input Folder ",
-						"container": "de-rnd"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "ID ",
-						"type": "String"
-					},
-					{
-						"name": "Restaurant_Name",
-						"type": "String"
-					},
-					{
-						"name": "Chicken ",
-						"type": "String"
-					},
-					{
-						"name": "Beef",
-						"type": "String"
-					},
-					{
-						"name": "Lettuce",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/transformedblob')]"
 			]
 		}
 	]

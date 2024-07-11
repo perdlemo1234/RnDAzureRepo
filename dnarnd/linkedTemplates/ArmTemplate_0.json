@@ -394,6 +394,56 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/input_food')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "transformedblob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "food.csv",
+						"folderPath": "Input Folder ",
+						"container": "de-rnd"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ID ",
+						"type": "String"
+					},
+					{
+						"name": "Restaurant_Name",
+						"type": "String"
+					},
+					{
+						"name": "Chicken ",
+						"type": "String"
+					},
+					{
+						"name": "Beef",
+						"type": "String"
+					},
+					{
+						"name": "Lettuce",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/transformedblob')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/joincolumnoutput')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -675,56 +725,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/input_food')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "transformedblob",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "food.csv",
-						"folderPath": "Input Folder ",
-						"container": "de-rnd"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "ID ",
-						"type": "String"
-					},
-					{
-						"name": "Restaurant_Name",
-						"type": "String"
-					},
-					{
-						"name": "Chicken ",
-						"type": "String"
-					},
-					{
-						"name": "Beef",
-						"type": "String"
-					},
-					{
-						"name": "Lettuce",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/transformedblob')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/GDP_lookuptransformation')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -804,6 +804,73 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/populaton_malaysia')]",
 				"[concat(variables('factoryId'), '/datasets/GDP_AnnualTransformation')]",
+				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Unpivot_Transformation')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "input_food",
+								"type": "DatasetReference"
+							},
+							"name": "boughtfood"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "popstateoutput",
+								"type": "DatasetReference"
+							},
+							"name": "unpivotsink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "unpivot1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          {ID } as string,",
+						"          Restaurant_Name as string,",
+						"          {Chicken } as string,",
+						"          Beef as string,",
+						"          Lettuce as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> boughtfood",
+						"boughtfood unpivot(output(",
+						"          {Fresh Produce} as string,",
+						"          {Amount } as string",
+						"     ),",
+						"     ungroupBy({ID },",
+						"          Restaurant_Name),",
+						"     lateral: true,",
+						"     ignoreNullPivots: false) ~> unpivot1",
+						"unpivot1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          Year as string,",
+						"          MoviesCount as string",
+						"     ),",
+						"     partitionFileNames:['food_unpivot'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> unpivotsink"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/input_food')]",
 				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
 			]
 		},
@@ -1101,120 +1168,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/input_employees')]",
-				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/employee_union_transformation')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "IT30",
-								"type": "DatasetReference"
-							},
-							"name": "IT30"
-						},
-						{
-							"dataset": {
-								"referenceName": "IT50",
-								"type": "DatasetReference"
-							},
-							"name": "IT50"
-						},
-						{
-							"dataset": {
-								"referenceName": "IT60",
-								"type": "DatasetReference"
-							},
-							"name": "IT60"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "popstateoutput",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "union1"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          EMPLOYEE_ID as string,",
-						"          FIRST_NAME as string,",
-						"          LAST_NAME as string,",
-						"          EMAIL as string,",
-						"          PHONE_NUMBER as string,",
-						"          HIRE_DATE as string,",
-						"          JOB_ID as string,",
-						"          SALARY as string,",
-						"          COMMISSION_PCT as string,",
-						"          MANAGER_ID as string,",
-						"          DEPARTMENT_ID as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> IT30",
-						"source(output(",
-						"          EMPLOYEE_ID as string,",
-						"          FIRST_NAME as string,",
-						"          LAST_NAME as string,",
-						"          EMAIL as string,",
-						"          PHONE_NUMBER as string,",
-						"          HIRE_DATE as string,",
-						"          JOB_ID as string,",
-						"          SALARY as string,",
-						"          COMMISSION_PCT as string,",
-						"          MANAGER_ID as string,",
-						"          DEPARTMENT_ID as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> IT50",
-						"source(output(",
-						"          EMPLOYEE_ID as string,",
-						"          FIRST_NAME as string,",
-						"          LAST_NAME as string,",
-						"          EMAIL as string,",
-						"          PHONE_NUMBER as string,",
-						"          HIRE_DATE as string,",
-						"          JOB_ID as string,",
-						"          SALARY as string,",
-						"          COMMISSION_PCT as string,",
-						"          MANAGER_ID as string,",
-						"          DEPARTMENT_ID as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> IT60",
-						"IT30, IT50, IT60 union(byName: true)~> union1",
-						"union1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          Year as string,",
-						"          MoviesCount as string",
-						"     ),",
-						"     partitionFileNames:['employee_union_output'],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/IT30')]",
-				"[concat(variables('factoryId'), '/datasets/IT50')]",
-				"[concat(variables('factoryId'), '/datasets/IT60')]",
 				"[concat(variables('factoryId'), '/datasets/popstateoutput')]"
 			]
 		}
