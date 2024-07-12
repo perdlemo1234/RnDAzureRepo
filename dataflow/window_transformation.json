@@ -59,7 +59,7 @@
 				"          Year as string,",
 				"          MoviesCount as string",
 				"     ),",
-				"     partitionFileNames:[''],",
+				"     partitionFileNames:['hello'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     partitionBy('hash', 1)) ~> ascendingsalary"

@@ -10,10 +10,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": {
-					"value": "@convertFromUtc(utcnow(),'China Standard Time')",
-					"type": "Expression"
-				},
 				"container": "de-rnd-output"
 			},
 			"columnDelimiter": ",",
