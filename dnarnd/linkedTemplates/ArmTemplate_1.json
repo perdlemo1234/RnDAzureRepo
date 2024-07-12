@@ -603,7 +603,8 @@
 						"          Year as string,",
 						"          MoviesCount as string",
 						"     ),",
-						"     partitionFileNames:['TEST '],",
+						"     partitionFileNames:[(toString(currentTimestamp(),'yyyyMMdd')\r",
+						")],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     partitionBy('hash', 1)) ~> ascendingsalary"
