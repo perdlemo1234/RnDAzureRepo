@@ -1069,7 +1069,7 @@
 					"location": {
 						"type": "AzureBlobStorageLocation",
 						"fileName": {
-							"value": "@convertTimeZone(utcnow(),'UTC','Greenwich Mean Time')",
+							"value": "@convertTimeZone(utcnow(),'UTC','Singapore Standard Time')",
 							"type": "Expression"
 						},
 						"container": "de-rnd-output"
