@@ -5,6 +5,9 @@
 			"referenceName": "transformedblob",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "ThatOneOutputandExtra"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {

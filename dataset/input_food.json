@@ -5,6 +5,9 @@
 			"referenceName": "transformedblob",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Normal_Inputs"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
