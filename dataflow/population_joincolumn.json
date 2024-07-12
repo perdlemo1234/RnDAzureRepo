@@ -15,9 +15,9 @@
 					"name": "popstate"
 				},
 				{
-					"dataset": {
-						"referenceName": "populaton_malaysia",
-						"type": "DatasetReference"
+					"linkedService": {
+						"referenceName": "transformedblob",
+						"type": "LinkedServiceReference"
 					},
 					"name": "popmsia"
 				}
@@ -48,16 +48,18 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> popstate",
-				"source(output(",
-				"          date as string,",
-				"          sex as string,",
-				"          age as string,",
-				"          ethnicity as string,",
-				"          population as string",
-				"     ),",
+				"source(useSchema: false,",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> popmsia",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'delimited',",
+				"     container: 'de-rnd',",
+				"     folderPath: 'Input Folder ',",
+				"     fileName: 'population_malaysia.csv',",
+				"     columnDelimiter: ',',",
+				"     escapeChar: '\\\\',",
+				"     quoteChar: '\\\"',",
+				"     columnNamesAsHeader: false) ~> popmsia",
 				"popstate, popmsia join(popstate@population == popmsia@population",
 				"     && popstate@ethnicity == popmsia@ethnicity,",
 				"     joinType:'inner',",
