@@ -1,6 +1,9 @@
 {
 	"name": "employee_derived_col",
 	"properties": {
+		"folder": {
+			"name": "Basic Transformations"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
@@ -46,8 +49,8 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> employee",
-				"cast1 derive(FIRST_NAME = upper(FIRST_NAME) ,",
-				"          LAST_NAME = upper(LAST_NAME) ,",
+				"cast1 derive(FIRST_NAME = upper(FIRST_NAME),",
+				"          LAST_NAME = upper(LAST_NAME),",
 				"          {High Salary } = iif(SALARY>10000, 'Yes', 'No')) ~> derivedColumn1",
 				"employee cast(output(",
 				"          SALARY as integer",

@@ -1,6 +1,9 @@
 {
 	"name": "moviedataflow_aggregate",
 	"properties": {
+		"folder": {
+			"name": "Basic Transformations"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

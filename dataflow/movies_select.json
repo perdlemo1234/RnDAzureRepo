@@ -1,6 +1,9 @@
 {
 	"name": "movies_select",
 	"properties": {
+		"folder": {
+			"name": "Basic Transformations"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [

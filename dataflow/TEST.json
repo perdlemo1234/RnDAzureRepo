@@ -1,36 +1,39 @@
 {
-	"name": "API",
+	"name": "TEST",
 	"properties": {
+		"folder": {
+			"name": "JSON_Transformations"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
-			"sources": [],
-			"sinks": [],
-			"transformations": [
+			"sources": [
 				{
-					"name": "FuelPrice",
-					"linkedService": {
-						"referenceName": "RestService1",
-						"type": "LinkedServiceReference"
-					}
+					"dataset": {
+						"referenceName": "input_employees",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
 				}
 			],
+			"sinks": [],
+			"transformations": [],
 			"scriptLines": [
-				" call(output(",
-				"          headers as [string,string],",
-				"          status as string",
+				"source(output(",
+				"          EMPLOYEE_ID as string,",
+				"          FIRST_NAME as string,",
+				"          LAST_NAME as string,",
+				"          EMAIL as string,",
+				"          PHONE_NUMBER as string,",
+				"          HIRE_DATE as string,",
+				"          JOB_ID as string,",
+				"          SALARY as string,",
+				"          COMMISSION_PCT as string,",
+				"          MANAGER_ID as string,",
+				"          DEPARTMENT_ID as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
-				"     format: 'rest',",
-				"     store: 'restservice',",
-				"     timeout: 30,",
-				"     requestInterval: 0,",
-				"     httpMethod: 'GET',",
-				"     headerColumnName: 'headers',",
-				"     bodyColumnName: 'body',",
-				"     statusColumnName: 'status',",
-				"     addResponseCode: true,",
-				"     requestFormat: ['type' -> 'json'],",
-				"     responseFormat: ['type' -> 'json', 'documentForm' -> 'documentPerLine']) ~> FuelPrice"
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1"
 			]
 		}
 	}
