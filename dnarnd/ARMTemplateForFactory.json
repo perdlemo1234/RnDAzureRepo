@@ -2243,7 +2243,7 @@
 						"          Year as string,",
 						"          MoviesCount as string",
 						"     ),",
-						"     partitionFileNames:[(toString(currentTimestamp(),'yyyyMMdd')\r",
+						"     partitionFileNames:[(concat('Employees',toString(currentTimestamp(),'yyyyMMdd'))\r",
 						")],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
