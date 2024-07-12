@@ -1068,10 +1068,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": {
-							"value": "@convertTimeZone(utcnow(),'UTC','Singapore Standard Time')",
-							"type": "Expression"
-						},
 						"container": "de-rnd-output"
 					},
 					"columnDelimiter": ",",
@@ -2247,7 +2243,7 @@
 						"          Year as string,",
 						"          MoviesCount as string",
 						"     ),",
-						"     partitionFileNames:['Output_window'],",
+						"     partitionFileNames:['TEST '],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     partitionBy('hash', 1)) ~> ascendingsalary"
