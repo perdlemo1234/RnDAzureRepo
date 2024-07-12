@@ -25,6 +25,10 @@
 			"transformations": [
 				{
 					"name": "window1"
+				},
+				{
+					"name": "filter1",
+					"description": "Selects all row rank 1s in the Dataset "
 				}
 			],
 			"scriptLines": [
@@ -48,7 +52,8 @@
 				"     asc(SALARY, true),",
 				"     {Average Salary } = avg(SALARY),",
 				"          {Rank Salary } = rank()) ~> window1",
-				"window1 sink(allowSchemaDrift: true,",
+				"window1 filter(equals({Rank Salary }, 1)) ~> filter1",
+				"filter1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          Year as string,",

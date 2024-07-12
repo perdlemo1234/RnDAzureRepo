@@ -10,6 +10,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@convertTimeZone(utcnow(),'UTC','Greenwich Mean Time')",
+					"type": "Expression"
+				},
 				"container": "de-rnd-output"
 			},
 			"columnDelimiter": ",",

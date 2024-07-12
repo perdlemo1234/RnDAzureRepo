@@ -1,0 +1,53 @@
+{
+	"name": "window_transformation1",
+	"properties": {
+		"type": "Flowlet",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "window1"
+				},
+				{
+					"name": "filter1",
+					"description": "Selects all row rank 1s in the Dataset "
+				},
+				{
+					"name": "rank1"
+				},
+				{
+					"name": "employees"
+				},
+				{
+					"name": "ascendingsalary"
+				}
+			],
+			"scriptLines": [
+				"input(output(",
+				"          EMPLOYEE_ID as string,",
+				"          FIRST_NAME as string,",
+				"          LAST_NAME as string,",
+				"          EMAIL as string,",
+				"          PHONE_NUMBER as string,",
+				"          HIRE_DATE as string,",
+				"          JOB_ID as string,",
+				"          SALARY as integer,",
+				"          COMMISSION_PCT as string,",
+				"          MANAGER_ID as integer,",
+				"          DEPARTMENT_ID as integer",
+				"     ),",
+				"     order: 0,",
+				"     allowSchemaDrift: true) ~> employees",
+				"rank1 window(over(DEPARTMENT_ID),",
+				"     asc(SALARY, true),",
+				"     {Average Salary } = avg(SALARY),",
+				"          {Rank Salary } = rank()) ~> window1",
+				"window1 filter(equals({Rank Salary }, 1)) ~> filter1",
+				"employees rank(asc(SALARY, true),",
+				"     output(TEST as long)) ~> rank1",
+				"filter1 output() ~> ascendingsalary"
+			]
+		}
+	}
+}
