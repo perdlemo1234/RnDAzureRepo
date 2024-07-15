@@ -8,9 +8,9 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"linkedService": {
-						"referenceName": "transformedblob",
-						"type": "LinkedServiceReference"
+					"dataset": {
+						"referenceName": "Students_JSON",
+						"type": "DatasetReference"
 					},
 					"name": "Students"
 				}
@@ -22,14 +22,17 @@
 				}
 			],
 			"scriptLines": [
-				"source(useSchema: false,",
+				"source(output(",
+				"          id as integer,",
+				"          name as string,",
+				"          age as integer,",
+				"          email as string,",
+				"          skills as string[],",
+				"          projects as (name as string, duration as string, role as string)[]",
+				"     ),",
 				"     allowSchemaDrift: true,",
-				"     validateSchema: false,",
+				"     validateSchema: true,",
 				"     ignoreNoFilesFound: false,",
-				"     format: 'json',",
-				"     container: 'de-rnd',",
-				"     folderPath: 'Input Folder /JSON_Folder',",
-				"     fileName: 'students.json',",
 				"     documentForm: 'singleDocument',",
 				"     partitionBy('hash', 1)) ~> Students",
 				"Students foldDown(unroll(({skills})),",
