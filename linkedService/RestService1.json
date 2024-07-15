@@ -1,11 +1,11 @@
 {
 	"name": "RestService1",
 	"properties": {
-		"description": "Covering the data.gov website ",
+		"description": "open weather map ",
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https://data.gov.my",
+			"url": "https://openweathermap.org",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
