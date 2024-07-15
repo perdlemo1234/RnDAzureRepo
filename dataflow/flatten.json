@@ -53,9 +53,11 @@
 				"     skipDuplicateMapOutputs: false) ~> flatten1",
 				"flatten1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     partitionFileNames:['JSON_Flatten_Output'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     saveOrder: 1) ~> sink1"
+				"     saveOrder: 1,",
+				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
 	}
