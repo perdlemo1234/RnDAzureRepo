@@ -9,7 +9,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "Students_JSON",
+						"referenceName": "student_json_input",
 						"type": "DatasetReference"
 					},
 					"name": "Students"
