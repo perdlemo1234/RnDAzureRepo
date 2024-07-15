@@ -1,11 +1,11 @@
 {
 	"name": "RestService1",
 	"properties": {
-		"description": "open weather map ",
+		"description": "malaysian data ",
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https://api.openweathermap.org",
+			"url": "https://api.data.gov.my",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
