@@ -31,11 +31,11 @@
 				"          projects as (name as string, duration as string, role as string)[]",
 				"     ),",
 				"     allowSchemaDrift: true,",
-				"     validateSchema: true,",
+				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'singleDocument',",
 				"     partitionBy('hash', 1)) ~> Students",
-				"Students foldDown(unroll(({skills})),",
+				"Students foldDown(unroll(skills),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flatten1"
 			]
