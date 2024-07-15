@@ -1,13 +1,13 @@
 {
 	"name": "RestService1",
 	"properties": {
+		"description": "Covering the data.gov website ",
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "http://api.data.gov.my",
+			"url": "https://data.gov.my/",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
-		},
-		"description": "Covering the api.data.gov website"
+		}
 	}
 }
