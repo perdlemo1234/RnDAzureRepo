@@ -5,7 +5,7 @@
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
-			"url": "https://data.gov.my/",
+			"url": "https://data.gov.my",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		}
