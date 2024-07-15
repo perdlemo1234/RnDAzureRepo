@@ -16,7 +16,11 @@
 				}
 			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "flatten1"
+				}
+			],
 			"scriptLines": [
 				"source(useSchema: false,",
 				"     allowSchemaDrift: true,",
@@ -26,7 +30,11 @@
 				"     container: 'de-rnd',",
 				"     folderPath: 'Input Folder /JSON_Folder',",
 				"     fileName: 'students.json',",
-				"     documentForm: 'documentPerLine') ~> Students"
+				"     documentForm: 'singleDocument',",
+				"     partitionBy('hash', 1)) ~> Students",
+				"Students foldDown(unroll(),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flatten1"
 			]
 		}
 	}
