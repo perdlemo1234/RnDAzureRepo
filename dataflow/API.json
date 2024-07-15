@@ -1,0 +1,17 @@
+{
+	"name": "API",
+	"properties": {
+		"folder": {
+			"name": "API"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				""
+			]
+		}
+	}
+}
