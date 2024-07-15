@@ -1,0 +1,33 @@
+{
+	"name": "flatten",
+	"properties": {
+		"folder": {
+			"name": "JSON transformations"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"linkedService": {
+						"referenceName": "transformedblob",
+						"type": "LinkedServiceReference"
+					},
+					"name": "Students"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(useSchema: false,",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'json',",
+				"     container: 'de-rnd',",
+				"     folderPath: 'Input Folder /JSON_Folder',",
+				"     fileName: 'students.json',",
+				"     documentForm: 'documentPerLine') ~> Students"
+			]
+		}
+	}
+}
