@@ -34,12 +34,13 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'singleDocument') ~> Students",
-				"Students foldDown(unroll(projects),",
+				"Students foldDown(unroll(skills, skills),",
 				"     mapColumn(",
 				"          name = projects.name,",
 				"          duration = projects.duration,",
 				"          role = projects.role",
 				"     ),",
+				"     partitionBy('hash', 1),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flatten1"
 			]
