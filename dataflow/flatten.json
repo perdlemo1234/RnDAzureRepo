@@ -33,9 +33,13 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     documentForm: 'singleDocument',",
-				"     partitionBy('hash', 1)) ~> Students",
-				"Students foldDown(unroll(skills),",
+				"     documentForm: 'singleDocument') ~> Students",
+				"Students foldDown(unroll(projects),",
+				"     mapColumn(",
+				"          name = projects.name,",
+				"          duration = projects.duration,",
+				"          role = projects.role",
+				"     ),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flatten1"
 			]
