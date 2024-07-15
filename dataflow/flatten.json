@@ -32,7 +32,7 @@
 				"     fileName: 'students.json',",
 				"     documentForm: 'singleDocument',",
 				"     partitionBy('hash', 1)) ~> Students",
-				"Students foldDown(unroll(),",
+				"Students foldDown(unroll(({skills})),",
 				"     skipDuplicateMapInputs: false,",
 				"     skipDuplicateMapOutputs: false) ~> flatten1"
 			]
