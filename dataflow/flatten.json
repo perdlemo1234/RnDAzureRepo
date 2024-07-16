@@ -13,6 +13,9 @@
 						"type": "DatasetReference"
 					},
 					"name": "Students"
+				},
+				{
+					"name": "source1"
 				}
 			],
 			"sinks": [
@@ -43,9 +46,12 @@
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'singleDocument',",
 				"     partitionBy('hash', 1)) ~> Students",
-				"Students foldDown(unrollMultiple(projects,skills),",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> source1",
+				"Students foldDown(unrollMultiple(skills,projects),",
 				"     mapColumn(",
 				"          name = projects.name,",
+				"          id = {projects.id},",
 				"          duration = projects.duration,",
 				"          role = projects.role,",
 				"          email",
