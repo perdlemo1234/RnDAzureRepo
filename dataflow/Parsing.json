@@ -1,0 +1,17 @@
+{
+	"name": "Parsing",
+	"properties": {
+		"folder": {
+			"name": "JSON transformations"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				""
+			]
+		}
+	}
+}
