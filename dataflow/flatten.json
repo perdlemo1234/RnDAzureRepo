@@ -42,7 +42,7 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'singleDocument') ~> Students",
-				"Students foldDown(unroll(skills, skills),",
+				"Students foldDown(unroll(skills),",
 				"     mapColumn(",
 				"          name = projects.name,",
 				"          duration = projects.duration,",
