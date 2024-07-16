@@ -13,9 +13,6 @@
 						"type": "DatasetReference"
 					},
 					"name": "Students"
-				},
-				{
-					"name": "source1"
 				}
 			],
 			"sinks": [
@@ -44,17 +41,16 @@
 				"     allowSchemaDrift: false,",
 				"     validateSchema: true,",
 				"     ignoreNoFilesFound: false,",
-				"     documentForm: 'singleDocument',",
+				"     documentForm: 'arrayOfDocuments',",
 				"     partitionBy('hash', 1)) ~> Students",
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source1",
 				"Students foldDown(unrollMultiple(skills,projects),",
 				"     mapColumn(",
-				"          name = projects.name,",
-				"          id = {projects.id},",
-				"          duration = projects.duration,",
-				"          role = projects.role,",
-				"          email",
+				"          id,",
+				"          name,",
+				"          age,",
+				"          email,",
+				"          skills,",
+				"          projects",
 				"     ),",
 				"     partitionBy('hash', 1),",
 				"     skipDuplicateMapInputs: false,",
