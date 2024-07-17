@@ -1,5 +1,5 @@
 {
-	"name": "Parsing",
+	"name": "Stringify",
 	"properties": {
 		"folder": {
 			"name": "JSON transformations"
@@ -9,34 +9,22 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "student_json_input",
+						"referenceName": "cake_text",
 						"type": "DatasetReference"
 					},
 					"name": "Students"
 				}
 			],
 			"sinks": [],
-			"transformations": [
-				{
-					"name": "parse1"
-				}
-			],
+			"transformations": [],
 			"scriptLines": [
 				"source(output(",
-				"          id as integer,",
-				"          name as string,",
-				"          age as integer,",
-				"          email as string,",
-				"          skills as string[],",
-				"          projects as (name as string, duration as string, role as string)[]",
+				"          {[} as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     documentForm: 'arrayOfDocuments') ~> Students",
-				"Students parse(age = ERROR_FUNCTION(''),",
-				"     format: 'json',",
-				"     documentForm: 'documentPerLine') ~> parse1"
+				"     partitionBy('hash', 1)) ~> Students"
 			]
 		}
 	}
