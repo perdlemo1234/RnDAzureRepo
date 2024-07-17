@@ -1,0 +1,32 @@
+{
+	"name": "student_txt_input",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "transformedblob",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "JSON_Inputs"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "output-onlinetools.txt",
+				"folderPath": "Input Folder /JSON_Folder",
+				"container": "de-rnd"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "id 1",
+				"type": "String"
+			}
+		]
+	}
+}
