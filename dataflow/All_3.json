@@ -1,5 +1,5 @@
 {
-	"name": "Stringify_and_Parse",
+	"name": "All_3",
 	"properties": {
 		"folder": {
 			"name": "JSON transformations"
@@ -22,11 +22,10 @@
 					"description": "Stringify Projects \n"
 				},
 				{
-					"name": "derivedColumn1",
-					"description": "Converting Projects Column into String "
+					"name": "flatten1"
 				},
 				{
-					"name": "flatten1"
+					"name": "parse1"
 				}
 			],
 			"scriptLines": [
@@ -45,7 +44,6 @@
 				"     partitionBy('hash', 1)) ~> Students",
 				"Students stringify(projects = projects ? string,",
 				"     format: 'json') ~> stringify1",
-				"flatten1 derive(projects = toString(projects)) ~> derivedColumn1",
 				"stringify1 foldDown(unroll(skills),",
 				"     mapColumn(",
 				"          id,",
@@ -56,7 +54,14 @@
 				"          projects",
 				"     ),",
 				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flatten1"
+				"     skipDuplicateMapOutputs: false) ~> flatten1",
+				"flatten1 parse(project_details = projects ? (name as string,",
+				"          duration as string,",
+				"          role as string),",
+				"     format: 'delimited',",
+				"     columnNamesAsHeader: false,",
+				"     columnDelimiter: ',',",
+				"     nullValue: '') ~> parse1"
 			]
 		}
 	}
