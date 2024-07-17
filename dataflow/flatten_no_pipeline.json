@@ -26,7 +26,8 @@
 			],
 			"transformations": [
 				{
-					"name": "flatten1"
+					"name": "flatten1",
+					"description": "Unroll Projects"
 				}
 			],
 			"scriptLines": [
