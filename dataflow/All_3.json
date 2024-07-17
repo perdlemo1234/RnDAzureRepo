@@ -15,7 +15,16 @@
 					"name": "Students"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "JSON_Output",
+						"type": "DatasetReference"
+					},
+					"name": "sink1",
+					"description": "Output into JSON because it contains complex data_type "
+				}
+			],
 			"transformations": [
 				{
 					"name": "stringify1",
@@ -61,7 +70,11 @@
 				"     format: 'delimited',",
 				"     columnNamesAsHeader: false,",
 				"     columnDelimiter: ',',",
-				"     nullValue: '') ~> parse1"
+				"     nullValue: '') ~> parse1",
+				"parse1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
