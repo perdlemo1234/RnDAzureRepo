@@ -43,7 +43,7 @@
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'arrayOfDocuments',",
 				"     partitionBy('hash', 1)) ~> Students",
-				"Students foldDown(unrollMultiple(skills,projects),",
+				"Students foldDown(unroll(projects, projects),",
 				"     mapColumn(",
 				"          id,",
 				"          name,",
