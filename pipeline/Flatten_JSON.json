@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "flatten",
+						"referenceName": "flatten_no_pipeline",
 						"type": "DataFlowReference"
 					},
 					"compute": {

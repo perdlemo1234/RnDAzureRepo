@@ -1,5 +1,5 @@
 {
-	"name": "flatten",
+	"name": "flatten_no_pipeline",
 	"properties": {
 		"folder": {
 			"name": "JSON transformations"
