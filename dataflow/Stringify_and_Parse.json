@@ -1,5 +1,5 @@
 {
-	"name": "Stringify",
+	"name": "Stringify_and_Parse",
 	"properties": {
 		"folder": {
 			"name": "JSON transformations"
@@ -9,22 +9,38 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "cake_text",
+						"referenceName": "student_json_input",
 						"type": "DatasetReference"
 					},
 					"name": "Students"
 				}
 			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "stringify1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
-				"          {[} as string",
+				"          id as integer,",
+				"          name as string,",
+				"          age as integer,",
+				"          email as string,",
+				"          skills as string[],",
+				"          projects as (name as string, duration as string, role as string)[]",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     partitionBy('hash', 1)) ~> Students"
+				"     documentForm: 'arrayOfDocuments',",
+				"     partitionBy('hash', 1)) ~> Students",
+				"Students stringify(projects = projects ? string,",
+				"     format: 'json') ~> stringify1",
+				"stringify1 derive(projects = toString(projects)) ~> derivedColumn1"
 			]
 		}
 	}
