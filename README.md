@@ -1,6 +1,6 @@
 Briefly Describe Microsoft Azure Portal ( resources )
 
-helllo testing for commit
+helllo testing for commit. more testing
 
 Summarise all transformations. State and explain simple transformations only. _[Filter/change data-type/Derived column/select/lookup/union]_
 
