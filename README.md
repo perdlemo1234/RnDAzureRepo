@@ -14,22 +14,47 @@ _1) Filter ( Under filter modifier ):_
 _2) Derived-Column ( Under filter modifier ):_
 ###### This creates new or edits existing columns by using custom expressions. The picture attempts to capitalise the names, and also displaying "Yes" or "No" statement based on their salary level. 
 
+_3) Conditional-Split ():_
 
-
+_4) Lookup ():_
 
 ### _B) Data Merging & Integration Technique:_
-_1) Lookup Tranformation:_
+_1) Lookup Tranformation:_ 
 
-_2) Union Transformation_
+_2) Union Transformation_ 
 
 _3) Join Transformaiton_
 
-### C) _Complex Transformations:_
+### C) _Complex / Hard  Transformations:_
+_1) Concatenate:_
 
+_2) Pivot & Unpivot:_
 
-### D) _Miscellaneous Stuff / Stuff to be aware of:_
+_3) Windows :_
 
+### D) _JSON Transformations:_
+_1) FLatten:_
 
+_2) Parse:_
+
+_3) Stringify:_
+
+### D) _Miscellaneous Stuff / Stuff To Be Aware Of:_
+_1) Pipeline vs Dataflow:_
+
+_2) Flowlet vs Dataflow:_
+
+_3) File Name Options (list them down below) (multiple output files?) How to fully utilise them:_
+
+_4) Definition of Partitioning:_
+
+_5) Definition of Aggregation:_
+
+_6) Linked Services:_
+
+_7) Integration Runtimes:_
+
+_8) What kind of output to place at sink? How does it work? What kind of logic must I follow:_
 
 
 Summarise all transformations. State and explain simple transformations only. _[Filter/change data-type/Derived column/select/lookup/union]_
