@@ -39,7 +39,7 @@ _2) Parse:_
 
 _3) Stringify:_
 
-### D) _Miscellaneous Stuff / Stuff To Be Aware Of:_
+### E) _Miscellaneous Stuff / Stuff To Be Aware Of:_
 _1) Pipeline vs Dataflow:_
 
 _2) Flowlet vs Dataflow:_
