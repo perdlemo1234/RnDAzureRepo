@@ -12,25 +12,50 @@ _1) Filter ( Under filter modifier ):_
 ###### This selects specific rows from a dataset based on certain conditions. Sometimes, a siple change of data-type is necessary to ensure the "Filter" transformation is working as intended. 
 
 _2) Derived-Column ( Under filter modifier ):_
-###### This creates new or edits existing columns by using custom expressions. The picture attempts to capitalise the names, and also displaying "Yes" or "No" statement based on their salary level. 
+###### This creates new or edits existing columns by using custom expressions. The following picture attempts to capitalise the names, and also displaying "Yes" or "No" statement based on their salary level - whether salary is above 10000. 
+![image](https://github.com/user-attachments/assets/86de5bf1-a8e9-490a-a459-027b74d496dd) 
 
-_3) Conditional-Split ():_
-
-_4) Lookup ():_
+_3) Conditional-Split ( Under Multiple inputs/outputs ):_
+###### Define multiple conditions where it evaluates the multiple rows of incoming data. Condition is based on simple/complex comparisons. Meaning we can create multiple branches of conditions and put it as a. An example is shown below: 
+![image](https://github.com/user-attachments/assets/e0de276d-c70f-46a1-96ae-7c564d4532c8)
 
 ### _B) Data Merging & Integration Technique:_
-_1) Lookup Tranformation:_ 
+_1) Lookup Tranformation ( Under Multiple inputs/outputs ):_ 
+###### Think of it as a left outer join. There exist a primary and lookup stream. All outputs disaplyed from primary stream, while only selected rows from lookup stream are included in the final output. PLease refer to trello card for more details under transformation activity.
 
-_2) Union Transformation_ 
+_2) Union Transformation ( Under Multiple inputs/outputs ):_
+###### Involves combining data from multiple sources and consolidate them into a single output. Put it simply, imagine putting all data vertically on top of each other. Order at which union appears matters. PLease refer to trello card for more details under transformation activity
 
-_3) Join Transformaiton_
+_3) Joined - Column Transformaiton ( Under Multiple inputs/outputs ):_
+###### Join columns based on a certain condition. Diagram below shows the different pre-set join types. 
+![image](https://github.com/user-attachments/assets/a4950bc2-f145-44e3-afaf-d400bb7c0edf)
 
 ### C) _Complex / Hard  Transformations:_
-_1) Concatenate:_
+_1) Concatenate Transformation ( Under concatenate_column_transformation ):_
+###### Concatenate involves combining rows & columns to form a larger sequence. In-built ADF capabilities allow us to concatenate the columns with ease. Concatenating rows in ADF is possible but will require external services ( Databricks or Azure functions ) to assist with the computation. There are differences between concatenate & derived columns. To put it simply, concatenate is a subset of derived columns - more can be found under the trello card. 
 
-_2) Pivot & Unpivot:_
+_2) Pivot & Unpivot Transformation ( Under pivot_transformation ):_
+###### Pivot : Involves restructuring data from row-based to column based format: 
+###### Unpivot : Changes column based format to row format.
 
-_3) Windows :_
+###### In both pivot and unpivot transformation, they require the user to enter 3 different inputs: 
+1) Group-by / Ungroup by:
+2) Pivot key / Unpivot key:
+3) Pivot column / Unpivot column: 
+
+Check trello document for additional infomation. 
+
+_3) Windows:_
+###### Divide the dataset into seperate windows/partitins , and then aggregate to obtain a better/clearer analaysis of the data. 
+
+###### _Would require 4 mandatory inputs ( explained in trello card ):_
+1) Over Clause: To create many partitions. **On what basis do I seperate my rows?**
+2) Sort: Order rows in ascending / descending order
+3) Range By: Not important [Option / Unbounded]
+4) Windows Column: In each partition, create meaningful analaysis code like (avg(SALARY)) & rank())
+![image](https://github.com/user-attachments/assets/36cf9350-98bf-41fa-8165-23ccd019eadf)
+
+######
 
 ### D) _JSON Transformations:_
 _1) FLatten:_
@@ -55,6 +80,8 @@ _6) Linked Services:_
 _7) Integration Runtimes:_
 
 _8) What kind of output to place at sink? How does it work? What kind of logic must I follow:_
+
+
 
 
 Summarise all transformations. State and explain simple transformations only. _[Filter/change data-type/Derived column/select/lookup/union]_
