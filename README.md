@@ -132,33 +132,42 @@ _5) Integration Runtimes vs Triggers:_
 - Initiate the execution of the pipeline in ADF.
 - They schedule an event or start the pipeline 
 
-_6) What kind of output to place at sink? How does it work? What kind of logic must I follow?:_
+_6) Inline vs Local Dataset:_
+Both methods of source-type will require some use case of linked service. 
+##### **_Inline:_**
+- ADF datasets defined directly with pipeline activities rather than being pre-defined and stable.
+- Often used for one time/simple data transformation/activity
 
+##### **_Local:_**
+- Pre-defined dataset created & managed seperately from the pipeline activities.
+- Reusable across multiple pipelines.
+- Usually used if dataset requires repeated usage.  
 
+_7) What kind of output to place at sink? How does it work? What kind of logic must I follow?:_
+- In most cases, the sink will infer the schema from the source.
+- We can create a **".xxx file"** which directs ONLY to the directory of the sink. _( Think of it like a blank slate for the transformation to absorb. )_
+- ADF will automatically create and update new schema for the specfic transformation within the data pipeline.
+- Can apply dynamic content - if we want to write data to different locations based on parameters or variables. 
+![image](https://github.com/user-attachments/assets/04767254-8e81-47f5-9cbb-3945c5018b7d)
 
-_7) Azure Functions vs Azure Databircks:_
+_8) Azure Functions vs Azure Databircks:_
 Both functions and Databricks involve some substantial amount of coding but what exactly are the difference and how do we fully utilise them? 
-
-**_Azure Functions:_**
+##### **_Azure Functions:_**
 - A _**serverless**_ compute serivce provided by Microsoft Azure - allows us to run code without having to manage underlying infrastructure.
 - Able to write in various languages , including C#, Javascript , Python, Powershell.
 - Can be triggered by variety of events such as HTTP requests, timer schedules, or changes in data.
 - Intended for lightweight operations , and small event-driven tasks.  
 
-**_Azure Databricks:_**
+##### **_Azure Databricks:_**
 - Requires a server to run the code. Think of it like a Jupyter Notebook but not exactly!
 - Is an Apaache Spark-based analytics platform optimised for Azure. Has sharing features and a collaborative environment for data engineering, data science, & machine learning.
 - Optimised for large scale data procesing 
 
+_9) Data Integration: ( Azure SQL Database, Cosmos DB, Azure Blob Storage, and third-party systems)_ 
+_Do I need to include this????_
 
-
-
-
-_7) Data Integration: ( Azure SQL Database, Cosmos DB, Azure Blob Storage, and third-party systems)_ 
-???
-
-_8) Security & Access Control: ( Manaage ADF resources & implementing role-based control )_ 
-???
+_10) Security & Access Control: ( Manaage ADF resources & implementing role-based control )_ 
+_Do I need to include this????_
 
 Summarise all transformations. State and explain simple transformations only. _[Filter/change data-type/Derived column/select/lookup/union]_
 
