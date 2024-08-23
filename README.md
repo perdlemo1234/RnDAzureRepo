@@ -95,16 +95,29 @@ _2) Flowlet vs Dataflow:_
 - Same as before, this allows us to design & execute a data transformation through a visual interface. 
 - More on designing and executing complex data transformations.
 
-_3) File Name Options (list them down below) ( Multiple output files? ) ( How to fully utilise them? ) :_
-**a) Pattern**
+_3) File Name Options (List them down below) ( ( How to fully utilise them? ):_
+##### _**a) "Pattern"**_
+- Specify naming pattern for output files using expressions.
+- Example of file naming pattern : "data_{YYYYMMDD}.csv"
 
-**b) Per Partition**
+##### _**b) Per Partition**_
+- Used to create a seperate file for each data partition when outputting data.
+- To handle large datasets by splitting them into smaller manageable files based on specific partition criteria such as date-ranges, categories, or regions. 
 
-**c) Name File as Column Data:**
+##### _**c) Name File as Column Data:**_
+![image](https://github.com/user-attachments/assets/7446c0b6-c03e-47fa-8422-b0f4f3a4ef67)
+- Use the content of a specific column , which can be useful for organising files based on data attributes
+- ADF will create seperate files where _filename_ is **determined by data in specified column.** For _every unique value_ in the column, a seperate file is created. **E.G.** If **"Region"** column is selected with **'NorthAmerica', 'Europe'** will result in file names like **"NorthAmerica.csv"** , **"Europe.csv"**
+- https://stackoverflow.com/questions/67106031/azure-data-factory-name-file-as-column-data-option-in-sink-transformation-of-d <- refer to this document for additional information.
+- **Focuses** on **generating filenames** based on column values, leading to multiple files where filename reflects the data attribute. 
 
-**d) Name Folder as Column Data**
+##### _**d) Name Folder as Column Data**_
+- Similar to "Name File as Column Data", where ADF will also create the correct corresponding folder as well as the files within that folder.
+- Best used when **organising files** into a **directory structure** is beneficial, when dealing with large datasets. 
 
-**e) Output to Single File**
+##### **e) Output to Single File**
+- Configures activity to consolidate all output data into _**ONE SINGLE FILE**_
+- This implies that the other "file-naming" conventions will generally lead to multiple files being created 
 
 _4) Definition of Partitioning:_
 
