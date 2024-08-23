@@ -95,7 +95,16 @@ _2) Flowlet vs Dataflow:_
 - Same as before, this allows us to design & execute a data transformation through a visual interface. 
 - More on designing and executing complex data transformations.
 
-_3) File Name Options (list them down below) (multiple output files?) How to fully utilise them:_
+_3) File Name Options (list them down below) ( Multiple output files? ) ( How to fully utilise them? ) :_
+**a) Pattern**
+
+**b) Per Partition**
+
+**c) Name File as Column Data:**
+
+**d) Name Folder as Column Data**
+
+**e) Output to Single File**
 
 _4) Definition of Partitioning:_
 
@@ -107,7 +116,7 @@ _7) Integration Runtimes:_
 
 _8) What kind of output to place at sink? How does it work? What kind of logic must I follow:_
 
-_9) Data Integration: ( Azure SQL Database, Cosmos DB, Azure Blob Storage, and third-party systems )_ 
+_9) Data Integration: ( Azure SQL Database, Cosmos DB, Azure Blob Storage, and third-party systems)_ 
 
 _10) Security & Access Control: ( Manaage ADF resources & implementing role-based control )_ 
 
