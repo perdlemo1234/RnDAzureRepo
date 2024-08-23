@@ -39,9 +39,9 @@ _2) Pivot & Unpivot Transformation ( Under pivot_transformation ):_
 ###### Unpivot : Changes column based format to row format.
 
 ###### In both pivot and unpivot transformation, they require the user to enter 3 different inputs: 
-1) Group-by / Ungroup by:
-2) Pivot key / Unpivot key:
-3) Pivot column / Unpivot column: 
+###### _1) Group-by / Ungroup by:_
+###### _2) Pivot key / Unpivot key:_
+###### _3) Pivot column / Unpivot column:_
 
 Check trello document for additional infomation. 
 
@@ -50,19 +50,22 @@ _3) Windows:_
 
 ###### _Would require 4 mandatory inputs ( explained in trello card ):_
 1) Over Clause: To create many partitions. **On what basis do I seperate my rows?**
-2) Sort: Order rows in ascending / descending order
-3) Range By: Not important [Option / Unbounded]
-4) Windows Column: In each partition, create meaningful analaysis code like (avg(SALARY)) & rank())
+2) Sort: **Order rows in ascending / descending order**
+3) Range By: **Not important [Option / Unbounded]**
+4) Windows Column: **In each partition, create meaningful analaysis code like (avg(SALARY)) & rank())**
 ![image](https://github.com/user-attachments/assets/36cf9350-98bf-41fa-8165-23ccd019eadf)
 
-######
-
-### D) _JSON Transformations:_
+### D) _JSON Transformations (All can be found under "JSON Transformations"):_
 _1) FLatten:_
+###### https://learn.microsoft.com/en-us/azure/data-factory/data-flow-flatten. Flatten only supports JSON files with arrays in order for the transformation to take place. ADF can automatically which column contains arrays amd provides the option to user which columns to "unroll by". 
+![image](https://github.com/user-attachments/assets/f72e90b9-5146-4c12-bcee-f41d89c63f11)
 
 _2) Parse:_
+###### https://learn.microsoft.com/en-us/azure/data-factory/data-flow-parse You can think of parsing as a middle man for further processing. (E.G. Columns containing dates in a string format can be parsed into a "Date-Time" data type to perform date & time calculations). It can be more complicated such as extracting parts of data from a string OR converting data from a non-standard format. Examples of other data types are included within the trello documentation. 
 
 _3) Stringify:_
+###### https://learn.microsoft.com/en-us/azure/data-factory/data-flow-stringify Involves converting data into string format. Useful for consistent formatting , concatentation , or when integrating with systems which expect string format. For example: if we have a JSON data, then we would want to create a string representation for logging / further processing.
+![image](https://github.com/user-attachments/assets/30f02b73-9f89-473a-addd-f1791b12b5a4)
 
 ### E) _Miscellaneous Stuff / Stuff To Be Aware Of:_
 _1) Pipeline vs Dataflow:_
