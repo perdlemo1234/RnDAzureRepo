@@ -68,15 +68,16 @@ _3) Stringify:_
 ![image](https://github.com/user-attachments/assets/30f02b73-9f89-473a-addd-f1791b12b5a4)
 
 ### E) _Miscellaneous Stuff / Stuff To Be Aware Of:_
-_1) Pipeline vs Dataflow:_
-**Pipeline:**
+_1) Pipeline vs Dataflow:_  
+
+## **Pipeline:**
 - An orchestrator which directs the flow of data and does not transform data! It also run under Data Factory execution runtime. 
 - Consists of various activity types, such as moving data (Copy Activity), running queries (Data Flow Activity) , call external services (Lookup Activitiy and more.)
 - Can use parameters to pass values dynamically, allow for flexible execution and reusability.
 - Can call data-flows, execute stored procedures, invoke Azure FUnctions or more. So, multiple data-flows can be included within a singular pipeline.
 - Triggers can be scheduled to run at specific times or manually to do so or other pipelines run.
 
-**Dataflow:**
+## **Dataflow:**
 - Dataflow is one of the activity types in pipeline.
 - Performs row and column based transformations. It provides a visual interactive interface for review to design & execute transformation. _( examples of all transformations are listed above )_
 - At runtime, a Data Flow executed in Spark Environent. 
@@ -84,13 +85,13 @@ _1) Pipeline vs Dataflow:_
 **NOTE : A pipeline can run without a Datafow ; a dataflow cannot be run without a pipeline.**
 
 _2) Flowlet vs Dataflow:_
-_**Flowlet:**_
+## **Flowlet:**
 - Reusable component within a Dataflow. Allows us to encampsulate a set of transformations into a reusable module , which can be called multiple data flows.
 - Does not require any source or sink to operate. [Has Input & Output] However, flowlet can be created from a dataflow, where the schema will be automatically assigned.
 - Expected schema of input & output must be included or else flowlet would not function correctly.
 - Use flowlet if we want to reuse common transformation within a Data flow. Helps simplifies data transformaion logic.
 
-_**Dataflow:**_
+## **Dataflow:**
 - Same as before, this allows us to design & execute a data transformation through a visual interface. 
 - More on designing and executing complex data transformations.
 
