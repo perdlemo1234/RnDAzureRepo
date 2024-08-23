@@ -119,25 +119,49 @@ _3) File Name Options (List them down below) ( ( How to fully utilise them? ):_
 - Configures activity to consolidate all output data into _**ONE SINGLE FILE**_
 - This implies that the other "file-naming" conventions will generally lead to multiple files being created 
 
-_4) Definition of Partitioning:_
+_4) Linked Services:_
+- A linked service is a connection string to various external sources / destinations, acting as a bridge between ADF and all available data sources.
+- Allows ADF TO move and transform data between data sources like ( ADLS, ABS , Azure Cosmos DB, Azure Table Storage ) 
 
-_5) Definition of Aggregation:_
+_5) Integration Runtimes vs Triggers:_
+##### **_IR ( Integration Runtime ):_**
+- Can be utilised within dataflow and pipeline.
+- There are dataflows within ADF for visual data transformation & integration. When running these transformations, **AIR** is responsible for all of these transformations because they have the necessary resources to complete it. 
 
-_6) Linked Services:_
+##### _**Triggers:**_
+- Initiate the execution of the pipeline in ADF.
+- They schedule an event or start the pipeline 
 
-_7) Integration Runtimes:_
-
-_8) What kind of output to place at sink? How does it work? What kind of logic must I follow:_
-
-_9) Data Integration: ( Azure SQL Database, Cosmos DB, Azure Blob Storage, and third-party systems)_ 
-
-_10) Security & Access Control: ( Manaage ADF resources & implementing role-based control )_ 
-
+_6) What kind of output to place at sink? How does it work? What kind of logic must I follow?:_
 
 
+
+_7) Azure Functions vs Azure Databircks:_
+Both functions and Databricks involve some substantial amount of coding but what exactly are the difference and how do we fully utilise them? 
+
+**_Azure Functions:_**
+- A _**serverless**_ compute serivce provided by Microsoft Azure - allows us to run code without having to manage underlying infrastructure.
+- Able to write in various languages , including C#, Javascript , Python, Powershell.
+- Can be triggered by variety of events such as HTTP requests, timer schedules, or changes in data.
+- Intended for lightweight operations , and small event-driven tasks.  
+
+**_Azure Databricks:_**
+- Requires a server to run the code. Think of it like a Jupyter Notebook but not exactly!
+- Is an Apaache Spark-based analytics platform optimised for Azure. Has sharing features and a collaborative environment for data engineering, data science, & machine learning.
+- Optimised for large scale data procesing 
+
+
+
+
+
+_7) Data Integration: ( Azure SQL Database, Cosmos DB, Azure Blob Storage, and third-party systems)_ 
+???
+
+_8) Security & Access Control: ( Manaage ADF resources & implementing role-based control )_ 
+???
 
 Summarise all transformations. State and explain simple transformations only. _[Filter/change data-type/Derived column/select/lookup/union]_
 
-For the rest of the transformations, state and elaborate further: 
+_For the rest of the transformations, state and elaborate further: 
 If need additional explanations, please refer to a certain section in the trello card. 
-Insert YT links , and website links. 
+Insert YT links , and website links._
