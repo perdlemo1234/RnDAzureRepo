@@ -8,10 +8,6 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"dataset": {
-						"referenceName": "input_employees",
-						"type": "DatasetReference"
-					},
 					"name": "employee"
 				}
 			],
@@ -33,29 +29,12 @@
 				}
 			],
 			"scriptLines": [
-				"source(output(",
-				"          EMPLOYEE_ID as string,",
-				"          FIRST_NAME as string,",
-				"          LAST_NAME as string,",
-				"          EMAIL as string,",
-				"          PHONE_NUMBER as string,",
-				"          HIRE_DATE as string,",
-				"          JOB_ID as string,",
-				"          SALARY as string,",
-				"          COMMISSION_PCT as string,",
-				"          MANAGER_ID as string,",
-				"          DEPARTMENT_ID as string",
-				"     ),",
-				"     allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> employee",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> employee",
 				"cast1 derive(FIRST_NAME = upper(FIRST_NAME),",
 				"          LAST_NAME = upper(LAST_NAME),",
 				"          {High Salary } = iif(SALARY>10000, 'Yes', 'No')) ~> derivedColumn1",
-				"employee cast(output(",
-				"          SALARY as integer",
-				"     ),",
-				"     errors: true) ~> cast1",
+				"employee cast(errors: true) ~> cast1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",

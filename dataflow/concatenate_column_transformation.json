@@ -9,10 +9,11 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "input_employees",
+						"referenceName": "moviescsvoutput",
 						"type": "DatasetReference"
 					},
-					"name": "employees"
+					"name": "employees",
+					"description": "can clear the schema from the source"
 				}
 			],
 			"sinks": [
@@ -30,20 +31,7 @@
 				}
 			],
 			"scriptLines": [
-				"source(output(",
-				"          EMPLOYEE_ID as string,",
-				"          FIRST_NAME as string,",
-				"          LAST_NAME as string,",
-				"          EMAIL as string,",
-				"          PHONE_NUMBER as string,",
-				"          HIRE_DATE as string,",
-				"          JOB_ID as string,",
-				"          SALARY as string,",
-				"          COMMISSION_PCT as string,",
-				"          MANAGER_ID as string,",
-				"          DEPARTMENT_ID as string",
-				"     ),",
-				"     allowSchemaDrift: true,",
+				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> employees",
 				"employees derive(FullName = concat(FIRST_NAME,LAST_NAME)) ~> derivedColumn1",
