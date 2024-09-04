@@ -20,6 +20,9 @@
 						"type": "DatasetReference"
 					},
 					"name": "GDP"
+				},
+				{
+					"name": "source1"
 				}
 			],
 			"sinks": [
@@ -59,6 +62,8 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> GDP",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> source1",
 				"population, GDP lookup(population@date == GDP@date,",
 				"     multiple: false,",
 				"     pickup: 'any',",

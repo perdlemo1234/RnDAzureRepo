@@ -49,7 +49,10 @@
 				"window1 filter(equals({Rank Salary }, 1)) ~> filter1",
 				"employees rank(asc(SALARY, true),",
 				"     output(TEST as long)) ~> rank1",
-				"filter1 output() ~> ascendingsalary"
+				"filter1 output(mapColumn(",
+				"          each(match(/* All input columns */ true()),",
+				"               /* Input name */ $$ = $$)",
+				"     )) ~> ascendingsalary"
 			]
 		}
 	}
